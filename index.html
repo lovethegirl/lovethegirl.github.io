@@ -309,164 +309,32 @@
       
         
           
-            <h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><p>在4台虚拟机上进行ceph集群的部署，这4台虚拟机上都安装了centos7.6的minimal版本，并为这4台虚机配置了静态IP，4台虚机的主机名和IP地址对应如下：</p>
-<table>
-<thead>
-<tr>
-<th align="center">主机名</th>
-<th align="left">IP地址</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">node1</td>
-<td align="left">192.168.1.11</td>
-</tr>
-<tr>
-<td align="center">node2</td>
-<td align="left">192.168.1.12</td>
-</tr>
-<tr>
-<td align="center">node3</td>
-<td align="left">192.168.1.13</td>
-</tr>
-<tr>
-<td align="center">ceph-deploy</td>
-<td align="left">192.168.1.10</td>
-</tr>
-</tbody></table>
-<p>各个节点上准备安装：</p>
-<ol>
-<li>node1: osd节点和mon节点</li>
-<li>node2: osd节点和mon节点</li>
-<li>node3: osd节点和mon节点</li>
-<li>ceph-deploy: ceph部署节点</li>
-</ol>
-<h2 id="安装ceph"><a href="#安装ceph" class="headerlink" title="安装ceph"></a>安装ceph</h2><h3 id="集群配置"><a href="#集群配置" class="headerlink" title="集群配置"></a>集群配置</h3><h4 id="1、首先在各个节点上创建一个部署ceph集群的用户，并授予其sudo权限"><a href="#1、首先在各个节点上创建一个部署ceph集群的用户，并授予其sudo权限" class="headerlink" title="1、首先在各个节点上创建一个部署ceph集群的用户，并授予其sudo权限"></a>1、首先在各个节点上创建一个部署ceph集群的用户，并授予其sudo权限</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@ceph-deploy ~]# useradd cepher</span><br><span class="line">[root@ceph-deploy ~]# passwd cepher</span><br><span class="line">Changing password for user cepher.</span><br><span class="line">New password: </span><br><span class="line">Retype new password: </span><br><span class="line">passwd: all authentication tokens updated successfully.</span><br><span class="line">[root@ceph-deploy ~]# echo &quot;cepher ALL = (root,ceph) NOPASSWD:ALL&quot; | sudo tee /etc/sudoers.d/cepher</span><br><span class="line">cepher ALL = (root,ceph) NOPASSWD:ALL</span><br><span class="line">[root@ceph-deploy ~]# chmod 0440 /etc/sudoers.d/cepher</span><br></pre></td></tr></table></figure>
-
-<h4 id="2、在各节点上关闭防火墙和selinux"><a href="#2、在各节点上关闭防火墙和selinux" class="headerlink" title="2、在各节点上关闭防火墙和selinux"></a>2、在各节点上关闭防火墙和selinux</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@ceph-deploy ~]$ setenforce 0</span><br><span class="line">[root@ceph-deploy ~]$ sed -i &apos;s/enforcing/disabled/g&apos; /etc/selinux/config</span><br><span class="line">[root@ceph-deploy ~]$ systemctl stop firewalld.service</span><br><span class="line">[root@ceph-deploy ~]$ systemctl disable firewalld.service</span><br><span class="line">Removed symlink /etc/systemd/system/multi-user.target.wants/firewalld.service.</span><br><span class="line">Removed symlink /etc/systemd/system/dbus-org.fedoraproject.FirewallD1.service.</span><br></pre></td></tr></table></figure>
-
-<h4 id="3、在ceph-deploy节点以cepher用户登陆，并配置host文件（其他节点也配置host文件）"><a href="#3、在ceph-deploy节点以cepher用户登陆，并配置host文件（其他节点也配置host文件）" class="headerlink" title="3、在ceph-deploy节点以cepher用户登陆，并配置host文件（其他节点也配置host文件）"></a>3、在ceph-deploy节点以cepher用户登陆，并配置host文件（其他节点也配置host文件）</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[cepher@ceph-deploy ~]$ cat /etc/hosts</span><br><span class="line">127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4</span><br><span class="line">::1         localhost localhost.localdomain localhost6 localhost6.localdomain6</span><br><span class="line">192.168.1.11 node1</span><br><span class="line">192.168.1.12 node2</span><br><span class="line">192.168.1.13 node3</span><br><span class="line">192.168.1.10 ceph-deploy</span><br></pre></td></tr></table></figure>
-
-<h4 id="4、在ceph-deploy节点配置免密登陆，使得部署节点可以免密登陆其他节点"><a href="#4、在ceph-deploy节点配置免密登陆，使得部署节点可以免密登陆其他节点" class="headerlink" title="4、在ceph-deploy节点配置免密登陆，使得部署节点可以免密登陆其他节点"></a>4、在ceph-deploy节点配置免密登陆，使得部署节点可以免密登陆其他节点</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[cepher@ceph-deploy ~]$ ssh-keygen</span><br><span class="line">...</span><br><span class="line">[cepher@ceph-deploy ~]$ ssh-copy-id node1</span><br><span class="line">[cepher@ceph-deploy ~]$ ssh-copy-id node2</span><br><span class="line">[cepher@ceph-deploy ~]$ ssh-copy-id node3</span><br></pre></td></tr></table></figure>
-
-<h4 id="5、在ceph-deploy节点自建ceph源，这样其他节点可以直接从部署节点获取ceph，一劳永逸。在自建源之前先在ceph-deploy节点配置ceph源，使用阿里源，这里我选择的是ceph-nautilus版本。"><a href="#5、在ceph-deploy节点自建ceph源，这样其他节点可以直接从部署节点获取ceph，一劳永逸。在自建源之前先在ceph-deploy节点配置ceph源，使用阿里源，这里我选择的是ceph-nautilus版本。" class="headerlink" title="5、在ceph-deploy节点自建ceph源，这样其他节点可以直接从部署节点获取ceph，一劳永逸。在自建源之前先在ceph-deploy节点配置ceph源，使用阿里源，这里我选择的是ceph nautilus版本。"></a>5、在ceph-deploy节点自建ceph源，这样其他节点可以直接从部署节点获取ceph，一劳永逸。在自建源之前先在ceph-deploy节点配置ceph源，使用阿里源，这里我选择的是ceph nautilus版本。</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">[Ceph]</span><br><span class="line">name=Ceph packages for $basearch</span><br><span class="line">baseurl=http://mirrors.aliyun.com/ceph/rpm-nautilus/el7/$basearch</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line">type=rpm-md</span><br><span class="line">gpgkey=https://mirrors.aliyun.com/ceph/keys/release.asc</span><br><span class="line">priority=1</span><br><span class="line">[Ceph-noarch]</span><br><span class="line">name=Ceph noarch packages</span><br><span class="line">baseurl=http://mirrors.aliyun.com/ceph/rpm-nautilus/el7/noarch</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line">type=rpm-md</span><br><span class="line">gpgkey=https://mirrors.aliyun.com/ceph/keys/release.asc</span><br><span class="line">priority=1</span><br><span class="line">[ceph-source]</span><br><span class="line">name=Ceph source packages</span><br><span class="line">baseurl=http://mirrors.aliyun.com/ceph/rpm-nautilus/el7/SRPMS</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line">type=rpm-md</span><br><span class="line">gpgkey=https://mirrors.aliyun.com/ceph/keys/release.asc</span><br><span class="line">priority=1</span><br></pre></td></tr></table></figure>
-
-<h3 id="自建ceph源"><a href="#自建ceph源" class="headerlink" title="自建ceph源"></a>自建ceph源</h3><h4 id="1、首先在ceph-deploy节点yum安装epel-release"><a href="#1、首先在ceph-deploy节点yum安装epel-release" class="headerlink" title="1、首先在ceph-deploy节点yum安装epel-release"></a>1、首先在ceph-deploy节点yum安装epel-release</h4><h4 id="2、创建自建源文件夹，然后将ceph及相关软件包下载到自建源文件夹下"><a href="#2、创建自建源文件夹，然后将ceph及相关软件包下载到自建源文件夹下" class="headerlink" title="2、创建自建源文件夹，然后将ceph及相关软件包下载到自建源文件夹下"></a>2、创建自建源文件夹，然后将ceph及相关软件包下载到自建源文件夹下</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[cepher@ceph-deploy ~]$ sudo mkdir -p /yum/ceph/nautilus</span><br><span class="line">[cepher@ceph-deploy ~]$ sudo yum -y install --downloadonly --downloaddir=/yum/ceph/nautilus/ ceph ceph-radosgw htop sysstat iftop iotop ntp ntpdate</span><br><span class="line">[cepher@ceph-deploy ~]$ sudo yum install -y createrepo httpd</span><br><span class="line">[cepher@ceph-deploy ~]$ sudo yum install -y ceph-deploy python-pip ntp ntpdate</span><br></pre></td></tr></table></figure>
-
-<h4 id="3、创建内部源，源路径就是自建源路径-yum-ceph-nautilus"><a href="#3、创建内部源，源路径就是自建源路径-yum-ceph-nautilus" class="headerlink" title="3、创建内部源，源路径就是自建源路径/yum/ceph/nautilus/"></a>3、创建内部源，源路径就是自建源路径/yum/ceph/nautilus/</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[cepher@ceph-deploy ~]$ sudo createrepo -pdo /yum/ceph/nautilus/ /yum/ceph/nautilus/</span><br><span class="line">Spawning worker 0 with 91 pkgs</span><br><span class="line">Workers Finished</span><br><span class="line">Saving Primary metadata</span><br><span class="line">Saving file lists metadata</span><br><span class="line">Saving other metadata</span><br><span class="line">Generating sqlite DBs</span><br><span class="line">Sqlite DBs complete</span><br></pre></td></tr></table></figure>
-
-<h4 id="4、修改httpd配置文件-etc-httpd-conf-httpd-conf，设置根路径为-yum-ceph-，然后启动httpd，将内部源通过httpd服务提供给其他节点"><a href="#4、修改httpd配置文件-etc-httpd-conf-httpd-conf，设置根路径为-yum-ceph-，然后启动httpd，将内部源通过httpd服务提供给其他节点" class="headerlink" title="4、修改httpd配置文件/etc/httpd/conf/httpd.conf，设置根路径为/yum/ceph/，然后启动httpd，将内部源通过httpd服务提供给其他节点"></a>4、修改httpd配置文件<code>/etc/httpd/conf/httpd.conf</code>，设置根路径为/yum/ceph/，然后启动httpd，将内部源通过httpd服务提供给其他节点</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">DocumentRoot &quot;/yum/ceph/&quot;</span><br><span class="line"></span><br><span class="line">&lt;Directory &quot;/yum/ceph/&quot;&gt;</span><br><span class="line">    AllowOverride None</span><br><span class="line">    # Allow open access:</span><br><span class="line">    Require all granted</span><br><span class="line">&lt;/Directory&gt;</span><br><span class="line"></span><br><span class="line">&lt;Directory &quot;/yum/ceph/&quot;&gt;</span><br><span class="line">...</span><br><span class="line">&lt;/Directory&gt;</span><br><span class="line"></span><br><span class="line">[cepher@ceph-deploy ~]$ sudo systemctl enable httpd.service</span><br><span class="line">Created symlink from /etc/systemd/system/multi-user.target.wants/httpd.service to /usr/lib/systemd/system/httpd.service.</span><br><span class="line">[cepher@ceph-deploy ~]$ sudo systemctl start httpd.service</span><br></pre></td></tr></table></figure>
-
-<p>至此，内部源就创建好了</p>
-<h4 id="5、ssh免密登陆到待安装ceph节点，配置源指向内部源"><a href="#5、ssh免密登陆到待安装ceph节点，配置源指向内部源" class="headerlink" title="5、ssh免密登陆到待安装ceph节点，配置源指向内部源"></a>5、ssh免密登陆到待安装ceph节点，配置源指向内部源</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[cepher@node1 ~]$ cd /etc/yum.repos.d/</span><br><span class="line">[cepher@node1 yum.repos.d]$ sudo mkdir backup</span><br><span class="line">[cepher@node1 yum.repos.d]$ sudo mv ./*.repo backup/</span><br><span class="line">[cepher@node1 yum.repos.d]$ cat inter.repo</span><br><span class="line">[http-repo]</span><br><span class="line">name=internal-ceph-repo</span><br><span class="line">baseurl=http://ceph-deploy/nautilus</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br></pre></td></tr></table></figure>
-
-<h3 id="安装ceph-1"><a href="#安装ceph-1" class="headerlink" title="安装ceph"></a>安装ceph</h3><p>ssh免密登陆到各节点，安装ceph，命令如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[cepher@node1 ~]$ sudo yum -y install  ceph ceph-radosgw htop sysstat iftop iotop ntp ntpdate</span><br><span class="line">[cepher@node1 ~]$ ceph --version</span><br><span class="line">ceph version 14.2.4 (75f4de193b3ea58512f204623e6c5a16e6c1e1ba) nautilus (stable)</span><br></pre></td></tr></table></figure>
-
-<p>至此，各个待安装节点上均安装了ceph，版本是14.2.4，但是现在node1，node2，node3节点上还没有安装osd，mon，rgw等服务，因此还需进一步部署集群。</p>
-<h2 id="集群部署"><a href="#集群部署" class="headerlink" title="集群部署"></a>集群部署</h2><p>集群的部署主要通过ceph-deploy命令进行。</p>
-<h4 id="1、首先，初始化集群"><a href="#1、首先，初始化集群" class="headerlink" title="1、首先，初始化集群"></a>1、首先，初始化集群</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[cepher@ceph-deploy ~]$ mkdir -p deploy</span><br><span class="line">[cepher@ceph-deploy deploy]$ ceph-deploy new node1 node2 node3</span><br></pre></td></tr></table></figure>
-<p>ceph-deploy new初始化集群的时候会生成三个文件，分别是配置文件<code>ceph.conf</code>、monitor key文件<code>ceph.mon.keyring</code>和日志文件ceph-deploy-ceph.log，我们需要手动修改配置文件<code>ceph.conf</code>，添加集群公网和集群内部网络的配置（这里只添加了集群公网配置）</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[cepher@ceph-deploy deploy]$ cat ceph.conf </span><br><span class="line">[global]</span><br><span class="line">fsid = 895357cd-1bd6-45c9-80cd-5d28d080efa4</span><br><span class="line">mon_initial_members = node1, node2, node3</span><br><span class="line">mon_host = 192.168.1.11,192.168.1.12,192.168.1.13</span><br><span class="line">auth_cluster_required = cephx</span><br><span class="line">auth_service_required = cephx</span><br><span class="line">auth_client_required = cephx</span><br><span class="line">public_network = 192.168.1.0/24</span><br></pre></td></tr></table></figure>
-
-<h4 id="2、创建monitor"><a href="#2、创建monitor" class="headerlink" title="2、创建monitor"></a>2、创建monitor</h4><p>上步的初始化仅仅是初始化了monitor，还需要创建monitor</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[cepher@ceph-deploy deploy]$ ceph-deploy mon create-initial</span><br><span class="line">[cepher@ceph-deploy deploy]$ ll</span><br><span class="line">total 156</span><br><span class="line">-rw-------. 1 root root    113 Oct  9 22:31 ceph.bootstrap-mds.keyring</span><br><span class="line">-rw-------. 1 root root    113 Oct  9 22:31 ceph.bootstrap-mgr.keyring</span><br><span class="line">-rw-------. 1 root root    113 Oct  9 22:31 ceph.bootstrap-osd.keyring</span><br><span class="line">-rw-------. 1 root root    113 Oct  9 22:31 ceph.bootstrap-rgw.keyring</span><br><span class="line">-rw-------. 1 root root    151 Oct  9 22:31 ceph.client.admin.keyring</span><br><span class="line">-rw-r--r--  1 root root    318 Oct 22 18:25 ceph.conf</span><br><span class="line">-rw-r--r--. 1 root root 128664 Oct 23 10:15 ceph-deploy-ceph.log</span><br><span class="line">-rw-------. 1 root root     73 Oct  9 22:29 ceph.mon.keyring</span><br></pre></td></tr></table></figure>
-
-<p><code>mon create-initial</code>会根据ceph.conf进行创建mon，判断monitor都创建成功后，会进行keyring的收集，这些keyring在后续创建其他成员的时候要用到。</p>
-<h4 id="3、分发集群keyring"><a href="#3、分发集群keyring" class="headerlink" title="3、分发集群keyring"></a>3、分发集群keyring</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[cepher@ceph-deploy deploy]$ ceph-deploy admin node1 node2 node3</span><br></pre></td></tr></table></figure>
-
-<p>这个操作是将集群的<code>admin.keyring</code>分发给指定的节点，这样这些节点就可以使用ceph命令了.</p>
-<h4 id="4、创建mgr"><a href="#4、创建mgr" class="headerlink" title="4、创建mgr"></a>4、创建mgr</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[cepher@ceph-deploy deploy]$ ceph-deploy mgr create node1 node2 node3</span><br></pre></td></tr></table></figure>
-
-<h4 id="5、创建osd"><a href="#5、创建osd" class="headerlink" title="5、创建osd"></a>5、创建osd</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[cepher@ceph-deploy deploy]$ ceph-deploy osd create --data /dev/sdb node1</span><br><span class="line">[cepher@ceph-deploy deploy]$ ceph-deploy osd create --data /dev/sdb node2</span><br><span class="line">[cepher@ceph-deploy deploy]$ ceph-deploy osd create --data /dev/sdb node3</span><br></pre></td></tr></table></figure>
-
-<p>我在node1,2,3三个节点上分别添加了sda和sdb两块硬盘，上述操作是将osd分别创建在三个节点的/dev/sdb上</p>
-<h4 id="6、创建rgw"><a href="#6、创建rgw" class="headerlink" title="6、创建rgw"></a>6、创建rgw</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[cepher@ceph-deploy deploy]$ ceph-deploy rgw create node1 node2</span><br></pre></td></tr></table></figure>
-
-<h4 id="7、在三个node节点上nptdate时钟，实现时钟同步"><a href="#7、在三个node节点上nptdate时钟，实现时钟同步" class="headerlink" title="7、在三个node节点上nptdate时钟，实现时钟同步"></a>7、在三个node节点上nptdate时钟，实现时钟同步</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ntpdate ntp1.aliyun.com #阿里云</span><br><span class="line">systemctl enable ntpd.service</span><br><span class="line">systemctl start ntpd.service</span><br></pre></td></tr></table></figure>
-
-<h4 id="8、查看集群状态"><a href="#8、查看集群状态" class="headerlink" title="8、查看集群状态"></a>8、查看集群状态</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]# ceph -s</span><br><span class="line">  cluster:</span><br><span class="line">    id:     895357cd-1bd6-45c9-80cd-5d28d080efa4</span><br><span class="line">    health: HEALTH_OK</span><br><span class="line"> </span><br><span class="line">  services:</span><br><span class="line">    mon: 3 daemons, quorum node1,node2,node3 (age 80s)</span><br><span class="line">    mgr: node3(active, since 2m), standbys: node1, node2</span><br><span class="line">    osd: 3 osds: 3 up (since 66s), 3 in (since 66s)</span><br><span class="line">    rgw: 3 daemons active (node1, node2, node3)</span><br><span class="line"> </span><br><span class="line">  data:</span><br><span class="line">    pools:   7 pools, 176 pgs</span><br><span class="line">    objects: 247 objects, 112 KiB</span><br><span class="line">    usage:   3.1 GiB used, 24 GiB / 27 GiB avail</span><br><span class="line">    pgs:     176 active+clean</span><br></pre></td></tr></table></figure>
-<hr>
-<h2 id="安装rgw"><a href="#安装rgw" class="headerlink" title="安装rgw"></a>安装rgw</h2><p>其实上面安装ceph的时候node1,node2,node3已经安装了rgw，直接可以创建rgw实例。rgw即RADOSGW，是一种服务，使客户端能够利用标准对象存储API来访问Ceph集群，支持Amazon S3和Openstack Swift API。rgw运行于librados之上，事实上就是一个称之为Civetweb的web服务器来响应api请求，客户端利用标准对象存储API与rgw通信，而rgw则使用librados与ceph集群通信。</p>
-<h3 id="创建rgw实例"><a href="#创建rgw实例" class="headerlink" title="创建rgw实例"></a>创建rgw实例</h3><h4 id="1、在ceph部署节点，执行ceph-deploy-rgw-create-lt-gateway-node-gt-，比如ceph-deploy-rgw-create-node1这样就在node1节点创建了rgw实例，默认rgw已经启动。"><a href="#1、在ceph部署节点，执行ceph-deploy-rgw-create-lt-gateway-node-gt-，比如ceph-deploy-rgw-create-node1这样就在node1节点创建了rgw实例，默认rgw已经启动。" class="headerlink" title="1、在ceph部署节点，执行ceph-deploy rgw create &lt;gateway-node&gt;，比如ceph-deploy rgw create node1这样就在node1节点创建了rgw实例，默认rgw已经启动。"></a>1、在ceph部署节点，执行<code>ceph-deploy rgw create &lt;gateway-node&gt;</code>，比如ceph-deploy rgw create node1这样就在node1节点创建了rgw实例，默认rgw已经启动。</h4><p>ceph  v0.80之后，Ceph对象网关运行在Civetweb（嵌入到<code>ceph-radosgw</code>守护程序中）上，默认通过7480端口提供rgw对象服务。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://client-node:7480</span><br></pre></td></tr></table></figure>
-
-<p>rgw实例会返回如下response</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;ListAllMyBucketsResult xmlns=&quot;http://s3.amazonaws.com/doc/2006-03-01/&quot;&gt;</span><br><span class="line">&lt;Owner&gt;</span><br><span class="line">&lt;ID&gt;anonymous&lt;/ID&gt;</span><br><span class="line">&lt;DisplayName/&gt;</span><br><span class="line">&lt;/Owner&gt;</span><br><span class="line">&lt;Buckets/&gt;</span><br><span class="line">&lt;/ListAllMyBucketsResult&gt;</span><br></pre></td></tr></table></figure>
-
-<h4 id="2、更改默认端口"><a href="#2、更改默认端口" class="headerlink" title="2、更改默认端口"></a>2、更改默认端口</h4><p>在ceph部署节点修改ceph.conf配置文件，以修改node1节点上的rgw默认端口为例，比如将端口修改为80，在[global]之下增加如下配置：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[client.rgw.node1]</span><br><span class="line">rgw_frontends = civetweb port=80</span><br></pre></td></tr></table></figure>
-
-<p> port后面的=两端不要有空格</p>
-<p>将更新的配置文件推送到您的Ceph对象网关节点（和其他Ceph节点）：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy --overwrite-conf config push node1 [&lt;other-nodes&gt;]</span><br></pre></td></tr></table></figure>
-
-<p>最后重新启动Ceph对象网关，使新的端口设置生效：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh node1</span><br><span class="line">sudo systemctl restart ceph-radosgw@rgw.node1.service</span><br></pre></td></tr></table></figure>
-
-<p>更多设置请查考<a href="https://docs.ceph.com/docs/master/install/install-ceph-gateway/" target="_blank" rel="noopener">Ceph Documentation</a></p>
-<h3 id="使用rgw"><a href="#使用rgw" class="headerlink" title="使用rgw"></a>使用rgw</h3><p>要使用REST接口，要首先为S3接口创建一个初始Ceph对象网关用户。然后，为Swift接口创建一个子用户。</p>
-<h4 id="1、创建用于S3访问的RADOSGW用户"><a href="#1、创建用于S3访问的RADOSGW用户" class="headerlink" title="1、创建用于S3访问的RADOSGW用户"></a>1、创建用于S3访问的RADOSGW用户</h4><p>命令如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo radosgw-admin user create --uid=&quot;testuser&quot; --display-name=&quot;First User&quot;</span><br></pre></td></tr></table></figure>
-
-<p>命令的输出将类似于以下内容：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">        &quot;user_id&quot;: &quot;testuser&quot;,</span><br><span class="line">        &quot;display_name&quot;: &quot;First User&quot;,</span><br><span class="line">        &quot;email&quot;: &quot;&quot;,</span><br><span class="line">        &quot;suspended&quot;: 0,</span><br><span class="line">        &quot;max_buckets&quot;: 1000,</span><br><span class="line">        &quot;subusers&quot;: [],</span><br><span class="line">        &quot;keys&quot;: [&#123;</span><br><span class="line">                &quot;user&quot;: &quot;testuser&quot;,</span><br><span class="line">                &quot;access_key&quot;: &quot;I0PJDPCIYZ665MW88W9R&quot;,</span><br><span class="line">                &quot;secret_key&quot;: &quot;dxaXZ8U90SXydYzyS5ivamEP20hkLSUViiaR+ZDA&quot;</span><br><span class="line">        &#125;],</span><br><span class="line">        &quot;swift_keys&quot;: [],</span><br><span class="line">        &quot;caps&quot;: [],</span><br><span class="line">        &quot;op_mask&quot;: &quot;read, write, delete&quot;,</span><br><span class="line">        &quot;default_placement&quot;: &quot;&quot;,</span><br><span class="line">        &quot;placement_tags&quot;: [],</span><br><span class="line">        &quot;bucket_quota&quot;: &#123;</span><br><span class="line">                &quot;enabled&quot;: false,</span><br><span class="line">                &quot;max_size_kb&quot;: -1,</span><br><span class="line">                &quot;max_objects&quot;: -1</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;user_quota&quot;: &#123;</span><br><span class="line">                &quot;enabled&quot;: false,</span><br><span class="line">                &quot;max_size_kb&quot;: -1,</span><br><span class="line">                &quot;max_objects&quot;: -1</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;temp_url_keys&quot;: []</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>NOTE:<code>keys-&gt;access_key</code> 和 <code>keys-&gt;secret_key</code>是用于访问验证的</p>
-<h4 id="2、创建一个SWIFT用户"><a href="#2、创建一个SWIFT用户" class="headerlink" title="2、创建一个SWIFT用户"></a>2、创建一个SWIFT用户</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh node1</span><br><span class="line">sudo radosgw-admin subuser create --uid=testuser --subuser=testuser:swift --access=full</span><br></pre></td></tr></table></figure>
-
-<p>命令的输出将类似于以下内容：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">        &quot;user_id&quot;: &quot;testuser&quot;,</span><br><span class="line">        &quot;display_name&quot;: &quot;First User&quot;,</span><br><span class="line">        &quot;email&quot;: &quot;&quot;,</span><br><span class="line">        &quot;suspended&quot;: 0,</span><br><span class="line">        &quot;max_buckets&quot;: 1000,</span><br><span class="line">        &quot;subusers&quot;: [&#123;</span><br><span class="line">                &quot;id&quot;: &quot;testuser:swift&quot;,</span><br><span class="line">                &quot;permissions&quot;: &quot;full-control&quot;</span><br><span class="line">        &#125;],</span><br><span class="line">        &quot;keys&quot;: [</span><br><span class="line">            &#123;</span><br><span class="line">                &quot;user&quot;: &quot;testuser&quot;,</span><br><span class="line">                &quot;access_key&quot;: &quot;I0PJDPCIYZ665MW88W9R&quot;,</span><br><span class="line">                &quot;secret_key&quot;: &quot;dxaXZ8U90SXydYzyS5ivamEP20hkLSUViiaR+ZDA&quot;</span><br><span class="line">        &#125;],</span><br><span class="line">        &quot;swift_keys&quot;: [&#123;</span><br><span class="line">                &quot;user&quot;: &quot;testuser:swift&quot;,</span><br><span class="line">                &quot;secret_key&quot;: &quot;244+fz2gSqoHwR3lYtSbIyomyPHf3i7rgSJrF\/IA&quot;</span><br><span class="line">        &#125;],</span><br><span class="line">        &quot;caps&quot;: [],</span><br><span class="line">        &quot;op_mask&quot;: &quot;read, write, delete&quot;,</span><br><span class="line">        &quot;default_placement&quot;: &quot;&quot;,</span><br><span class="line">        &quot;placement_tags&quot;: [],</span><br><span class="line">        &quot;bucket_quota&quot;: &#123;</span><br><span class="line">                &quot;enabled&quot;: false,</span><br><span class="line">                &quot;max_size_kb&quot;: -1,</span><br><span class="line">                &quot;max_objects&quot;: -1</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;user_quota&quot;: &#123;</span><br><span class="line">                &quot;enabled&quot;: false,</span><br><span class="line">                &quot;max_size_kb&quot;: -1,</span><br><span class="line">                &quot;max_objects&quot;: -1</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;temp_url_keys&quot;: [],</span><br><span class="line">        &quot;type&quot;: &quot;rgw&quot;,</span><br><span class="line">        &quot;mfa_ids&quot;: []</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="3、查看用户信息（需要指定用户id）"><a href="#3、查看用户信息（需要指定用户id）" class="headerlink" title="3、查看用户信息（需要指定用户id）"></a>3、查看用户信息（需要指定用户id）</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">radosgw-admin user info --uid=testuser</span><br></pre></td></tr></table></figure>
+          环境准备在4台虚拟机上进行ceph集群的部署，这4台虚拟机上都安装了centos7.6的minimal版本，并为这4台虚机配置了静态IP，4台虚机的主机名和IP地址对应如下：
 
 
-<h4 id="4、编写python脚本测试S3接口"><a href="#4、编写python脚本测试S3接口" class="headerlink" title="4、编写python脚本测试S3接口"></a>4、编写python脚本测试S3接口</h4><p>编写并运行Python测试脚本来验证S3访问。S3访问测试脚本将连接到<code>radosgw</code>，创建一个新存储桶并列出所有存储桶。<br><code>aws_access_key_id</code>和 <code>aws_secret_access_key</code>对应于<code>keys-&gt;access_key</code> 和 <code>keys-&gt;secret_key</code></p>
-<p>需要安装<code>python-boto</code>软件包：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh node1</span><br><span class="line">sudo yum install python-boto</span><br></pre></td></tr></table></figure>
 
-<p>创建Python脚本：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">vi s3test.py</span><br><span class="line"></span><br><span class="line">import boto.s3.connection</span><br><span class="line"></span><br><span class="line">access_key = &apos;I0PJDPCIYZ665MW88W9R&apos;</span><br><span class="line">secret_key = &apos;dxaXZ8U90SXydYzyS5ivamEP20hkLSUViiaR+ZDA&apos;</span><br><span class="line">conn = boto.connect_s3(</span><br><span class="line">        aws_access_key_id=access_key,</span><br><span class="line">        aws_secret_access_key=secret_key,</span><br><span class="line">        host=&apos;&#123;hostname&#125;&apos;, port=&#123;port&#125;,</span><br><span class="line">        is_secure=False, calling_format=boto.s3.connection.OrdinaryCallingFormat(),</span><br><span class="line">       )</span><br><span class="line"></span><br><span class="line">bucket = conn.create_bucket(&apos;my-new-bucket&apos;)</span><br><span class="line">for bucket in conn.get_all_buckets():</span><br><span class="line">    print &quot;&#123;name&#125; &#123;created&#125;&quot;.format(</span><br><span class="line">        name=bucket.name,</span><br><span class="line">        created=bucket.creation_date,</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+主机名
+IP地址
 
-<p>其中{hostname}和{port}分别替换为rgw本机的主机名和端口号<br>执行该python脚本：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[cepher@node1 ~]# python s3test.py </span><br><span class="line">my-new-bucket 2019-10-23T01:45:13.627Z</span><br></pre></td></tr></table></figure>
 
-<p>得到上面的输出类似的输出，说明S3接口可以正常访问</p>
-<h4 id="5、使用s3cmd工具测试s3接口"><a href="#5、使用s3cmd工具测试s3接口" class="headerlink" title="5、使用s3cmd工具测试s3接口"></a>5、使用s3cmd工具测试s3接口</h4><ul>
-<li><p>首先安装s3cmd，通过pip或者yum可以直接安装<br><code>yum install s3cmd</code><br><code>pip search s3cmd</code></p>
-</li>
-<li><p>使用s3cmd前需要配置Access Key 和 Secret Key，这两个key便是创建s3用户时生成的，这个在前面提过。使用命令<code>s3cmd --configure</code>进行配置，下图是本机的配置过程：<br><img src="s3cmd-conf.png" alt="s3cmd-conf"><br>注意图中红框中标出的（因为之前已经配置过，所以[]中记录的是之前的配置），配置完成之后会保存在.s3cfg文件中。vim打开配置文件.s3cfg，将<code>signature_v2 = False</code>修改为<code>signature_v2 = True</code>，本文在实验过程中发现如果不将signature_v2设置为True，s3的读写文件操作返回403(Forbidden)，这样修改参考了：<br><a href="https://github.com/s3tools/s3cmd/issues/1017" target="_blank" rel="noopener">s3cmd_issue</a>，<br>但是还没有彻底解决，只是可以正常用了，只用签名v4该怎么做，这里还没解决。</p>
-</li>
-<li><p>s3cmd的基本使用</p>
-<ol>
-<li>列举出所有buckets（bucket相当于根文件夹）<br><code>s3cmd ls</code></li>
-<li>创建 bucket，且 bucket 名称是唯一的，不能重复<br><code>s3cmd mb s3://my-bucket-name</code></li>
-<li>删除空 bucket<br><code>s3cmd rb s3://my-bucket-name</code></li>
-<li>列举 bucket 中的内容<br><code>s3cmd ls s3://my-bucket-name</code></li>
-<li>上传文件到某个 bucket<br><code>s3cmd put file.txt s3://my-bucket-name/file.txt</code></li>
-<li>上传并将权限设置为所有人可读<br><code>s3cmd put --acl-public file.txt s3://my-bucket-name/file.txt</code>，文件对应的可访问URL: <a href="http://192.168.1.11:80/my-bucket-name/file.txt" target="_blank" rel="noopener">http://192.168.1.11:80/my-bucket-name/file.txt</a></li>
-<li>从某个bucket下载文件，并进行保存为某文件<br><code>s3cmd get s3://my-bucket-name/file.txt xxx</code></li>
-<li>删除某个文件<br><code>s3cmd del s3://my-bucket-name/file.txt</code></li>
-<li>设置bucket的public权限<br><code>s3cmd setacl s3://myexamplebucket.calvium.com/ --acl-public --recursive</code></li>
-<li>获得某个bucket所占用的空间大小<br><code>s3cmd du -H s3://my-bucket-name</code></li>
-</ol>
-</li>
-</ul>
-<h4 id="6、访问验证，测试SWIFT接口"><a href="#6、访问验证，测试SWIFT接口" class="headerlink" title="6、访问验证，测试SWIFT接口"></a>6、访问验证，测试SWIFT接口</h4><p>可以通过<code>swift</code>命令行客户端验证快速访问，首先安装<code>swift</code>客户端：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install python-setuptools</span><br><span class="line">sudo easy_install pip</span><br><span class="line">sudo pip install --upgrade setuptools</span><br><span class="line">sudo pip install --upgrade python-swiftclient</span><br></pre></td></tr></table></figure>
 
-<p>要测试快速访问，执行以下操作：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">swift -V 1 -A http://&#123;IP ADDRESS&#125;:&#123;port&#125;/auth -U testuser:swift -K &apos;&#123;swift_secret_key&#125;&apos; list</span><br></pre></td></tr></table></figure>
+node1
+192.168.1.11
 
-<p><code>{IP ADDRESS}:{port}</code>用rgw服务主机的ip地址和端口号替换（默认7480），<code>{swift_secret_key}</code>用创建<code>swift</code>用户时的输出<code>swift_keys-&gt;secret_key</code>替换。</p>
-<p>输出应为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">my-new-bucket</span><br></pre></td></tr></table></figure>
 
-<p>输出结果说明<code>swift</code>接口可以正常访问</p>
-<hr>
-<p>ceph部署参考：<a href="http://strugglesquirrel.com/2019/04/23/centos7%25E9%2583%25A8%25E7%25BD%25B2ceph/" target="_blank" rel="noopener">http://strugglesquirrel.com/2019/04/23/centos7%E9%83%A8%E7%BD%B2ceph/</a></p>
+node2
+192.168.1.12
 
-          
+
+node3
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/11/11/ceph%E5%AE%89%E8%A3%85/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -584,9 +452,16 @@
       
         
           
-            <p>开始我的ceph之旅</p>
+          开始我的ceph之旅
 
           
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/11/10/ceph/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -704,21 +579,15 @@
       
         
           
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-          
+          Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in 
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/11/10/hello-world/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
