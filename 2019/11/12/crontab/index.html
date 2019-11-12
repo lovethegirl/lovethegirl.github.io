@@ -79,14 +79,14 @@
 
 
 
-<meta name="description" content="title crontab使用教程crontab是一个定时任务守护进行，可以精确到分钟，大多用于定时提醒、运行脚本等对时间精度要求不高的场景。 1 crontab文件的分析日志文件目录: &#x2F;var&#x2F;log&#x2F;cron* crontab文件: &#x2F;etc&#x2F;crontab，文件的内容如下：  1234567891011121314SHELL=&#x2F;bin&#x2F;bashPATH=&#x2F;sbin:&#x2F;bin:&#x2F;usr&#x2F;s">
+<meta name="description" content="crontab是一个定时任务守护进行，可以精确到分钟，大多用于定时提醒、运行脚本等对时间精度要求不高的场景。 crontab文件的分析日志文件目录: &#x2F;var&#x2F;log&#x2F;cron* crontab文件: &#x2F;etc&#x2F;crontab，文件的内容如下：  1234567891011121314SHELL=&#x2F;bin&#x2F;bashPATH=&#x2F;sbin:&#x2F;bin:&#x2F;usr&#x2F;sbin:&#x2F;usr&#x2F;binMAILTO=r">
 <meta property="og:type" content="article">
-<meta property="og:title" content="crontab">
+<meta property="og:title" content="crontab使用教程">
 <meta property="og:url" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2019&#x2F;11&#x2F;12&#x2F;crontab&#x2F;index.html">
 <meta property="og:site_name" content="李厅">
-<meta property="og:description" content="title crontab使用教程crontab是一个定时任务守护进行，可以精确到分钟，大多用于定时提醒、运行脚本等对时间精度要求不高的场景。 1 crontab文件的分析日志文件目录: &#x2F;var&#x2F;log&#x2F;cron* crontab文件: &#x2F;etc&#x2F;crontab，文件的内容如下：  1234567891011121314SHELL=&#x2F;bin&#x2F;bashPATH=&#x2F;sbin:&#x2F;bin:&#x2F;usr&#x2F;s">
+<meta property="og:description" content="crontab是一个定时任务守护进行，可以精确到分钟，大多用于定时提醒、运行脚本等对时间精度要求不高的场景。 crontab文件的分析日志文件目录: &#x2F;var&#x2F;log&#x2F;cron* crontab文件: &#x2F;etc&#x2F;crontab，文件的内容如下：  1234567891011121314SHELL=&#x2F;bin&#x2F;bashPATH=&#x2F;sbin:&#x2F;bin:&#x2F;usr&#x2F;sbin:&#x2F;usr&#x2F;binMAILTO=r">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-12T07:30:35.000Z">
+<meta property="og:updated_time" content="2019-11-12T07:36:21.756Z">
 <meta name="twitter:card" content="summary">
 
 
@@ -123,7 +123,7 @@
 
 
 
-  <title>crontab | 李厅</title>
+  <title>crontab使用教程 | 李厅</title>
   
 
 
@@ -267,7 +267,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">crontab</h1>
+          <h1 class="post-title" itemprop="name headline">crontab使用教程</h1>
         
 
         <div class="post-meta">
@@ -279,7 +279,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-12T15:30:59+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-12T15:36:21+08:00">
                 2019-11-12
               </time>
             
@@ -317,9 +317,8 @@
       
 
       
-        <hr>
-<h2 id="title-crontab使用教程"><a href="#title-crontab使用教程" class="headerlink" title="title crontab使用教程"></a>title crontab使用教程</h2><p>crontab是一个定时任务守护进行，可以精确到分钟，大多用于定时提醒、运行脚本等对时间精度要求不高的场景。</p>
-<h2 id="1-crontab文件的分析"><a href="#1-crontab文件的分析" class="headerlink" title="1 crontab文件的分析"></a>1 crontab文件的分析</h2><pre><code>日志文件目录: /var/log/cron*
+        <p>crontab是一个定时任务守护进行，可以精确到分钟，大多用于定时提醒、运行脚本等对时间精度要求不高的场景。</p>
+<h2 id="crontab文件的分析"><a href="#crontab文件的分析" class="headerlink" title="crontab文件的分析"></a>crontab文件的分析</h2><pre><code>日志文件目录: /var/log/cron*
 crontab文件: /etc/crontab，文件的内容如下：
 
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">SHELL=/bin/bash</span><br><span class="line">PATH=/sbin:/bin:/usr/sbin:/usr/bin</span><br><span class="line">MAILTO=root</span><br><span class="line"></span><br><span class="line"># For details see man 4 crontabs</span><br><span class="line"></span><br><span class="line"># Example of job definition:</span><br><span class="line"># .---------------- minute (0 - 59)</span><br><span class="line"># |  .------------- hour (0 - 23)</span><br><span class="line"># |  |  .---------- day of month (1 - 31)</span><br><span class="line"># |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...</span><br><span class="line"># |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat</span><br><span class="line"># |  |  |  |  |</span><br><span class="line"># *  *  *  *  * user-name  command to be executed</span><br></pre></td></tr></table></figure>
@@ -342,12 +341,12 @@ crontab文件: /etc/crontab，文件的内容如下：
 
 中杠（-）：可以用整数之间的中杠表示一个整数范围，例如“2-6”表示“2,3,4,5,6”
 
-正斜线（/）：可以用正斜线指定时间的间隔频率，例如“0-23/2”表示每两小时执行一次。</code></pre><h2 id="2-常见的命令参数"><a href="#2-常见的命令参数" class="headerlink" title="2 常见的命令参数"></a>2 常见的命令参数</h2>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">usage:  crontab [-u user] file</span><br><span class="line">      crontab [-u user] [ -e | -l | -r ]</span><br><span class="line">              (default operation is replace, per 1003.2)</span><br><span class="line">      -e      (edit user&apos;s crontab)</span><br><span class="line">      -l      (list user&apos;s crontab)</span><br><span class="line">      -r      (delete user&apos;s crontab)</span><br><span class="line">      -i      (prompt before deleting user&apos;s crontab)</span><br><span class="line">      -s      (selinux context)</span><br></pre></td></tr></table></figure>
+正斜线（/）：可以用正斜线指定时间的间隔频率，例如“0-23/2”表示每两小时执行一次。</code></pre><h2 id="常见的命令参数"><a href="#常见的命令参数" class="headerlink" title="常见的命令参数"></a>常见的命令参数</h2>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">usage:  crontab [-u user] file</span><br><span class="line">      crontab [-u user] [ -e | -l | -r ]</span><br><span class="line">              (default operation is replace, per 1003.2)</span><br><span class="line">      -e      (edit user&apos;s crontab)</span><br><span class="line">      -l      (list user&apos;s crontab)</span><br><span class="line">      -r      (delete user&apos;s crontab)</span><br><span class="line">      -i      (prompt before deleting user&apos;s crontab)</span><br><span class="line">      -s      (selinux context)</span><br></pre></td></tr></table></figure>
 
-<h2 id="3-crontab的日志路径"><a href="#3-crontab的日志路径" class="headerlink" title="3 crontab的日志路径"></a>3 crontab的日志路径</h2><pre><code>crontab的日志是按照时间的顺序排列的，日志路径为 /var/log/cron*
+<h2 id="crontab的日志路径"><a href="#crontab的日志路径" class="headerlink" title="crontab的日志路径"></a>crontab的日志路径</h2><pre><code>crontab的日志是按照时间的顺序排列的，日志路径为 /var/log/cron*
 /var/log/cron只会记录是否执行了某些计划的脚本，但是具体执行是否正确以及脚本执行过程中的一些信息则linux会每次都发邮件到该用户下。</code></pre> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Nov 12 14:45:01 ceph-node2 CROND[62088]: (root) CMD (/usr/bin/echo `date` &gt; /root/test.txt )</span><br><span class="line">Nov 12 14:46:01 ceph-node2 CROND[62110]: (root) CMD (/usr/bin/echo `date` &gt; /root/test.txt )</span><br><span class="line">Nov 12 14:47:01 ceph-node2 CROND[62130]: (root) CMD (/usr/bin/echo `date` &gt; /root/test.txt )</span><br><span class="line">Nov 12 14:48:01 ceph-node2 CROND[62151]: (root) CMD (/usr/bin/echo `date` &gt; /root/test.txt )</span><br><span class="line">Nov 12 14:49:01 ceph-node2 CROND[62171]: (root) CMD (/usr/bin/echo `date` &gt; /root/test.txt )</span><br><span class="line">Nov 12 14:50:01 ceph-node2 CROND[62193]: (root) CMD (/usr/lib64/sa/sa1 1 1)</span><br><span class="line">Nov 12 14:50:01 ceph-node2 CROND[62194]: (root) CMD (/usr/bin/echo `date` &gt; /root/test.txt )</span><br><span class="line">Nov 12 14:51:01 ceph-node2 CROND[62215]: (root) CMD (/usr/bin/echo `date` &gt; /root/test.txt )</span><br><span class="line">Nov 12 14:52:01 ceph-node2 CROND[62312]: (root) CMD (/usr/bin/echo `date` &gt; /root/test.txt )</span><br></pre></td></tr></table></figure>
 
-<h2 id="4-常用命令"><a href="#4-常用命令" class="headerlink" title="4 常用命令"></a>4 常用命令</h2><h3 id="crontab安装以及启动服务"><a href="#crontab安装以及启动服务" class="headerlink" title="crontab安装以及启动服务"></a>crontab安装以及启动服务</h3> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">//安装crontab</span><br><span class="line">yum install crontabs</span><br><span class="line"></span><br><span class="line">//crontab的服务操作说明</span><br><span class="line">/sbin/service crond start //启动服务</span><br><span class="line"></span><br><span class="line">/sbin/service crond stop //关闭服务</span><br><span class="line"></span><br><span class="line">/sbin/service crond restart //重启服务</span><br><span class="line"></span><br><span class="line">/sbin/service crond reload //重新载入配置</span><br><span class="line"></span><br><span class="line">//查看crontab服务状态：</span><br><span class="line">	</span><br><span class="line">  service crond status</span><br><span class="line"></span><br><span class="line">//手动启动crontab服务：</span><br><span class="line"> service crond status</span><br></pre></td></tr></table></figure>
+<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><h3 id="crontab安装以及启动服务"><a href="#crontab安装以及启动服务" class="headerlink" title="crontab安装以及启动服务"></a>crontab安装以及启动服务</h3> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">//安装crontab</span><br><span class="line">yum install crontabs</span><br><span class="line"></span><br><span class="line">//crontab的服务操作说明</span><br><span class="line">/sbin/service crond start //启动服务</span><br><span class="line"></span><br><span class="line">/sbin/service crond stop //关闭服务</span><br><span class="line"></span><br><span class="line">/sbin/service crond restart //重启服务</span><br><span class="line"></span><br><span class="line">/sbin/service crond reload //重新载入配置</span><br><span class="line"></span><br><span class="line">//查看crontab服务状态：</span><br><span class="line">	</span><br><span class="line">  service crond status</span><br><span class="line"></span><br><span class="line">//手动启动crontab服务：</span><br><span class="line"> service crond status</span><br></pre></td></tr></table></figure>
 
 <h3 id="编辑crontab服务"><a href="#编辑crontab服务" class="headerlink" title="编辑crontab服务"></a>编辑crontab服务</h3>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">//编辑定时任务</span><br><span class="line">  crontab –e</span><br><span class="line">  ==》vim /var/spool/cron/root</span><br><span class="line"></span><br><span class="line">// 每隔2分钟输出时间到文件</span><br><span class="line">  */2 * * * * echo `date` &gt;&gt; $HOME&gt;test.txt</span><br><span class="line"></span><br><span class="line">//crontab -r 删除定时任务</span><br><span class="line"></span><br><span class="line">==&gt; 从/var/spool/cron目录中删除用户的crontab文件</span><br><span class="line">==&gt; 如果不指定用户，则默认删除当前用户的crontab文件</span><br><span class="line">crontab –i  在删除用户的crontab文件时给确认提示</span><br><span class="line"></span><br><span class="line">//备份crontab文件</span><br><span class="line">crontab -l &gt; $HOME/mycron</span><br></pre></td></tr></table></figure>
 
@@ -505,7 +504,7 @@ echo &quot;*/30 [3-5],[17-20] * * * /bin/sh /home/omc/h.sh &gt;/dev/null 2&gt;&a
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#title-crontab使用教程"><span class="nav-number">1.</span> <span class="nav-text">title crontab使用教程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-crontab文件的分析"><span class="nav-number">2.</span> <span class="nav-text">1 crontab文件的分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-常见的命令参数"><span class="nav-number">3.</span> <span class="nav-text">2 常见的命令参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-crontab的日志路径"><span class="nav-number">4.</span> <span class="nav-text">3 crontab的日志路径</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-常用命令"><span class="nav-number">5.</span> <span class="nav-text">4 常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#crontab安装以及启动服务"><span class="nav-number">5.1.</span> <span class="nav-text">crontab安装以及启动服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编辑crontab服务"><span class="nav-number">5.2.</span> <span class="nav-text">编辑crontab服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#crontab常用实例"><span class="nav-number">5.3.</span> <span class="nav-text">crontab常用实例</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#crontab文件的分析"><span class="nav-number">1.</span> <span class="nav-text">crontab文件的分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见的命令参数"><span class="nav-number">2.</span> <span class="nav-text">常见的命令参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#crontab的日志路径"><span class="nav-number">3.</span> <span class="nav-text">crontab的日志路径</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用命令"><span class="nav-number">4.</span> <span class="nav-text">常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#crontab安装以及启动服务"><span class="nav-number">4.1.</span> <span class="nav-text">crontab安装以及启动服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编辑crontab服务"><span class="nav-number">4.2.</span> <span class="nav-text">编辑crontab服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#crontab常用实例"><span class="nav-number">4.3.</span> <span class="nav-text">crontab常用实例</span></a></li></ol></li></ol></div>
             
 
           </div>
