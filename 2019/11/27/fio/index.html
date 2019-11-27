@@ -86,10 +86,10 @@
 <meta property="og:site_name" content="李厅">
 <meta property="og:description" content="FIO 是一款 用于对磁盘进行性能测试的工具。可以测试IOPS，吞吐量，IO延迟等主要性能指标,而且支持多种IO引擎。FIO支持13种不同的I&#x2F;O引擎，包括:sync,mmap, libaio, posixaio, SG v3, splice, null, network, syslet, guasi, solarisaio 等等。由于目前主要做ceph的项目，所有搜索引擎主要使用rbd，下面的例">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2019&#x2F;11&#x2F;27&#x2F;fio&#x2F;pic&#x2F;kv.jpg">
-<meta property="og:updated_time" content="2019-11-27T11:50:09.242Z">
+<meta property="og:image" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2019&#x2F;11&#x2F;27&#x2F;pic&#x2F;kv.jpg">
+<meta property="og:updated_time" content="2019-11-27T12:06:20.865Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2019&#x2F;11&#x2F;27&#x2F;fio&#x2F;pic&#x2F;kv.jpg">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2019&#x2F;11&#x2F;27&#x2F;pic&#x2F;kv.jpg">
 
 
 
@@ -281,7 +281,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-27T19:50:09+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-27T20:06:20+08:00">
                 2019-11-27
               </time>
             
@@ -322,7 +322,7 @@
         <p>FIO 是一款 用于对磁盘进行性能测试的工具。可以测试IOPS，吞吐量，IO延迟等主要性能指标,而且支持多种IO引擎。FIO支持13种不同的I/O引擎，包括:sync,mmap, libaio, posixaio, SG v3, splice, null, network, syslet, guasi, solarisaio 等等。由于目前主要做ceph的项目，所有搜索引擎主要使用rbd，下面的例子也主要针对ceph集群的测试使用。</p>
 <h2 id="FIO的下载与安装"><a href="#FIO的下载与安装" class="headerlink" title="FIO的下载与安装"></a>FIO的下载与安装</h2><p>FIO可以在yum上直接下载安装，也可以在<a href="http://brick.kernel.dk/snaps/下载对应的版本进行编译安装。使用编译安装的步骤如下：" target="_blank" rel="noopener">http://brick.kernel.dk/snaps/下载对应的版本进行编译安装。使用编译安装的步骤如下：</a></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">下载按包装包</span><br><span class="line">wget http://brick.kernel.dk/snaps/fio-3.5.tar.gz</span><br><span class="line"></span><br><span class="line">解压并编译安装</span><br><span class="line"></span><br><span class="line">tar -xzvf ./fio-3.5.tar.gz</span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
-<p><img src="/2019/11/27/fio/pic/kv.jpg" alt="image"><br>使用yum方式的可以直接yum安装</p>
+<p><img src="/2019/11/27/fio/../pic/kv.jpg" alt="image"><br>使用yum方式的可以直接yum安装</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install fio-2.1.2-1.el6.rf.x86_64.rpm</span><br></pre></td></tr></table></figure>
 
 <h2 id="FIO参数说明"><a href="#FIO参数说明" class="headerlink" title="FIO参数说明"></a>FIO参数说明</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">filename=/dev/sdb1       测试文件名称，通常选择需要测试的盘的data目录。</span><br><span class="line">direct=1                 测试过程绕过机器自带的buffer。使测试结果更真实。</span><br><span class="line">bs=16k                   单次io的块文件大小为16k</span><br><span class="line">bsrange=512-2048         同上，提定数据块的大小范围</span><br><span class="line">size=5g    本次的测试文件大小为5g，以每次4k的io进行测试。</span><br><span class="line">numjobs=30               本次的测试线程为30.</span><br><span class="line">runtime=1000             测试时间为1000秒，如果不写则一直将5g文件分4k每次写完为止。</span><br><span class="line">ioengine=psync           io引擎使用pync方式</span><br><span class="line">rwmixwrite=30            在混合读写的模式下，写占30%</span><br><span class="line">group_reporting          关于显示结果的，汇总每个进程的信息</span><br><span class="line">lockmem=1g               只使用1g内存进行测试。</span><br><span class="line">zero_buffers             用0初始化系统buffer。</span><br><span class="line">nrfiles=8                每个进程生成文件的数量</span><br></pre></td></tr></table></figure>
