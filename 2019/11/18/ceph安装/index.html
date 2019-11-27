@@ -445,7 +445,7 @@
 <h4 id="5、使用s3cmd工具测试s3接口"><a href="#5、使用s3cmd工具测试s3接口" class="headerlink" title="5、使用s3cmd工具测试s3接口"></a>5、使用s3cmd工具测试s3接口</h4><ul>
 <li><p>首先安装s3cmd，通过pip或者yum可以直接安装<br><code>yum install s3cmd</code><br><code>pip search s3cmd</code></p>
 </li>
-<li><p>使用s3cmd前需要配置Access Key 和 Secret Key，这两个key便是创建s3用户时生成的，这个在前面提过。使用命令<code>s3cmd --configure</code>进行配置，下图是本机的配置过程：<br><img src="s3cmd-conf.png" alt="s3cmd-conf"><br>注意图中红框中标出的（因为之前已经配置过，所以[]中记录的是之前的配置），配置完成之后会保存在.s3cfg文件中。vim打开配置文件.s3cfg，将<code>signature_v2 = False</code>修改为<code>signature_v2 = True</code>，本文在实验过程中发现如果不将signature_v2设置为True，s3的读写文件操作返回403(Forbidden)，这样修改参考了：<br><a href="https://github.com/s3tools/s3cmd/issues/1017" target="_blank" rel="noopener">s3cmd_issue</a>，<br>但是还没有彻底解决，只是可以正常用了，只用签名v4该怎么做，这里还没解决。</p>
+<li><p>使用s3cmd前需要配置Access Key 和 Secret Key，这两个key便是创建s3用户时生成的，这个在前面提过。使用命令<code>s3cmd --configure</code>进行配置，下图是本机的配置过程：<br><img src="/2019/11/18/ceph%E5%AE%89%E8%A3%85/s3cmd-conf.png" alt="s3cmd-conf"><br>注意图中红框中标出的（因为之前已经配置过，所以[]中记录的是之前的配置），配置完成之后会保存在.s3cfg文件中。vim打开配置文件.s3cfg，将<code>signature_v2 = False</code>修改为<code>signature_v2 = True</code>，本文在实验过程中发现如果不将signature_v2设置为True，s3的读写文件操作返回403(Forbidden)，这样修改参考了：<br><a href="https://github.com/s3tools/s3cmd/issues/1017" target="_blank" rel="noopener">s3cmd_issue</a>，<br>但是还没有彻底解决，只是可以正常用了，只用签名v4该怎么做，这里还没解决。</p>
 </li>
 <li><p>s3cmd的基本使用</p>
 <ol>
