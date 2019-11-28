@@ -79,12 +79,17 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="李厅">
-<meta property="og:url" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;archives&#x2F;index.html">
+<meta name="description" content="前段时间工作中设备厂商突然来电说是检查ceph集群中某次物理机down机是否有Redhat的fence机制引起的。出于对fence的不了解所以马上调研了一下fence到底是啥，下面简单的介绍了fence。其实在ceph中并没有使用这种技术。 每个节点之间互相发送探测包进行判断节点的存活性。一般会有专门的线路进行探测，这条线路称为“心跳线”（上图直接使用eth0线路作为心跳线）。假设node1的心跳">
+<meta property="og:type" content="article">
+<meta property="og:title" content="fence的基本介绍">
+<meta property="og:url" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2019&#x2F;11&#x2F;28&#x2F;fence&#x2F;index.html">
 <meta property="og:site_name" content="李厅">
+<meta property="og:description" content="前段时间工作中设备厂商突然来电说是检查ceph集群中某次物理机down机是否有Redhat的fence机制引起的。出于对fence的不了解所以马上调研了一下fence到底是啥，下面简单的介绍了fence。其实在ceph中并没有使用这种技术。 每个节点之间互相发送探测包进行判断节点的存活性。一般会有专门的线路进行探测，这条线路称为“心跳线”（上图直接使用eth0线路作为心跳线）。假设node1的心跳">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2019&#x2F;11&#x2F;28&#x2F;fence&#x2F;fence.jpg">
+<meta property="og:updated_time" content="2019-11-28T00:49:36.950Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2019&#x2F;11&#x2F;28&#x2F;fence&#x2F;fence.jpg">
 
 
 
@@ -114,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://lovethegirl.github.io/archives/"/>
+  <link rel="canonical" href="http://lovethegirl.github.io/2019/11/28/fence/"/>
 
 
 
 
 
-  <title>归档 | 李厅</title>
+  <title>fence的基本介绍 | 李厅</title>
   
 
 
@@ -139,7 +144,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -233,411 +238,144 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
+  <div id="posts" class="posts-expand">
+    
 
-      <span class="archive-page-counter">
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://lovethegirl.github.io/2019/11/28/fence/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="David Lee">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="李厅">
+    </span>
+
+    
+      <header class="post-header">
+
         
         
+          <h1 class="post-title" itemprop="name headline">fence的基本介绍</h1>
         
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-28T08:44:37+08:00">
+                2019-11-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
           
-        
-        嗯..! 目前共计 12 篇日志。 继续努力。
-      </span>
 
-      
-
-        
-        
-        
-
-        
           
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2019">2019</h1>
-          </div>
-        
-        
+            
+          
 
-        
+          
+          
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+          
 
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/11/28/fence/" itemprop="url">
-              
-                <span itemprop="name">fence的基本介绍</span>
-              
-            </a>
-        
-      </h2>
+          
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2019-11-28T08:44:37+08:00"
-              content="2019-11-28" >
-          11-28
-        </time>
-      </div>
+          
 
-    </header>
-  </article>
+        </div>
+      </header>
+    
 
-
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/11/27/test/" itemprop="url">
-              
-                <span itemprop="name">test</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2019-11-27T20:55:22+08:00"
-              content="2019-11-27" >
-          11-27
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
       
 
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/11/27/fio/" itemprop="url">
-              
-                <span itemprop="name">fio使用教程</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2019-11-27T20:06:20+08:00"
-              content="2019-11-27" >
-          11-27
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+      
+        <p>前段时间工作中设备厂商突然来电说是检查ceph集群中某次物理机down机是否有Redhat的fence机制引起的。出于对fence的不了解所以马上调研<br>了一下fence到底是啥，下面简单的介绍了fence。其实在ceph中并没有使用这种技术。</p>
+<p>每个节点之间互相发送探测包进行判断节点的存活性。一般会有专门的线路进行探测，这条线路称为“心跳线”（上图直接使用eth0线路作为心跳线）。<br>假设node1的心跳线出问题，则node2和node3会认为node1出问题，然后就会把资源调度在node2或者node3上运行，但node1会认为自己没问题不让<br>node2或者node3抢占资源，此时就出现了脑裂(split brain)。</p>
+<p>此时如果在整个环境里有一种设备直接把node1断电，则可以避免脑裂的发生，这种设备叫做fence或者stonith(Shoot The Other Node In The<br>Head爆头哥)。在物理机里virsh是通过串口线管理guestos的，比如virsh destroy nodeX，这里我们把物理机当成fence设备。</p>
+<p><img src="/2019/11/28/fence/fence.jpg" alt="fence"></p>
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/11/26/dd/" itemprop="url">
-              
-                <span itemprop="name">dd使用教程</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2019-11-26T19:30:48+08:00"
-              content="2019-11-26" >
-          11-26
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/11/22/find/" itemprop="url">
-              
-                <span itemprop="name">find使用教程</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2019-11-22T20:53:40+08:00"
-              content="2019-11-22" >
-          11-22
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/11/21/expect/" itemprop="url">
-              
-                <span itemprop="name">ssh自动登录</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2019-11-21T18:25:34+08:00"
-              content="2019-11-21" >
-          11-21
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/11/19/liunux%E5%91%BD%E4%BB%A4/" itemprop="url">
-              
-                <span itemprop="name">linux目前常用的命令总结</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2019-11-19T16:11:05+08:00"
-              content="2019-11-19" >
-          11-19
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/11/19/hexo_config/" itemprop="url">
-              
-                <span itemprop="name">hexo个人博客简单配置</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2019-11-19T09:24:54+08:00"
-              content="2019-11-19" >
-          11-19
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/11/18/crontab/" itemprop="url">
-              
-                <span itemprop="name">crontab使用教程</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2019-11-18T14:33:43+08:00"
-              content="2019-11-18" >
-          11-18
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/11/18/ceph%E5%AE%89%E8%A3%85/" itemprop="url">
-              
-                <span itemprop="name">Ceph RGW 部署</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2019-11-18T14:33:43+08:00"
-              content="2019-11-18" >
-          11-18
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
     </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/27/test/" rel="next" title="test">
+                <i class="fa fa-chevron-left"></i> test
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
-
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/archives/page/2/">2</a><a class="extend next" rel="next" href="/archives/page/2/">&lt;i class=&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
-  </nav>
+  </article>
 
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -645,6 +383,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -841,6 +583,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
