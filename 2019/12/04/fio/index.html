@@ -82,14 +82,12 @@
 <meta name="description" content="FIO 是一款 用于对磁盘进行性能测试的工具。可以测试IOPS，吞吐量，IO延迟等主要性能指标,而且支持多种IO引擎。FIO支持13种不同的I&#x2F;O引擎，包括:sync,mmap, libaio, posixaio, SG v3, splice, null, network, syslet, guasi, solarisaio 等等。由于目前主要做ceph的项目，所有搜索引擎主要使用rbd，下面的例">
 <meta property="og:type" content="article">
 <meta property="og:title" content="fio使用教程">
-<meta property="og:url" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2019&#x2F;11&#x2F;27&#x2F;fio&#x2F;index.html">
+<meta property="og:url" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2019&#x2F;12&#x2F;04&#x2F;fio&#x2F;index.html">
 <meta property="og:site_name" content="李厅">
 <meta property="og:description" content="FIO 是一款 用于对磁盘进行性能测试的工具。可以测试IOPS，吞吐量，IO延迟等主要性能指标,而且支持多种IO引擎。FIO支持13种不同的I&#x2F;O引擎，包括:sync,mmap, libaio, posixaio, SG v3, splice, null, network, syslet, guasi, solarisaio 等等。由于目前主要做ceph的项目，所有搜索引擎主要使用rbd，下面的例">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2019&#x2F;11&#x2F;27&#x2F;pic&#x2F;kv.jpg">
-<meta property="og:updated_time" content="2019-11-27T12:06:20.865Z">
+<meta property="og:updated_time" content="2019-12-03T12:56:31.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2019&#x2F;11&#x2F;27&#x2F;pic&#x2F;kv.jpg">
 
 
 
@@ -119,7 +117,7 @@
 
 
 
-  <link rel="canonical" href="http://lovethegirl.github.io/2019/11/27/fio/"/>
+  <link rel="canonical" href="http://lovethegirl.github.io/2019/12/04/fio/"/>
 
 
 
@@ -252,7 +250,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://lovethegirl.github.io/2019/11/27/fio/">
+    <link itemprop="mainEntityOfPage" href="http://lovethegirl.github.io/2019/12/04/fio/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="David Lee">
@@ -281,8 +279,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-27T20:06:20+08:00">
-                2019-11-27
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-04T19:38:54+08:00">
+                2019-12-04
               </time>
             
 
@@ -322,15 +320,16 @@
         <p>FIO 是一款 用于对磁盘进行性能测试的工具。可以测试IOPS，吞吐量，IO延迟等主要性能指标,而且支持多种IO引擎。FIO支持13种不同的I/O引擎，包括:sync,mmap, libaio, posixaio, SG v3, splice, null, network, syslet, guasi, solarisaio 等等。由于目前主要做ceph的项目，所有搜索引擎主要使用rbd，下面的例子也主要针对ceph集群的测试使用。</p>
 <h2 id="FIO的下载与安装"><a href="#FIO的下载与安装" class="headerlink" title="FIO的下载与安装"></a>FIO的下载与安装</h2><p>FIO可以在yum上直接下载安装，也可以在<a href="http://brick.kernel.dk/snaps/下载对应的版本进行编译安装。使用编译安装的步骤如下：" target="_blank" rel="noopener">http://brick.kernel.dk/snaps/下载对应的版本进行编译安装。使用编译安装的步骤如下：</a></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">下载按包装包</span><br><span class="line">wget http://brick.kernel.dk/snaps/fio-3.5.tar.gz</span><br><span class="line"></span><br><span class="line">解压并编译安装</span><br><span class="line"></span><br><span class="line">tar -xzvf ./fio-3.5.tar.gz</span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
-<p><img src="/2019/11/27/fio/../pic/kv.jpg" alt="image"><br>使用yum方式的可以直接yum安装</p>
+
+<p>使用yum方式的可以直接yum安装</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install fio-2.1.2-1.el6.rf.x86_64.rpm</span><br></pre></td></tr></table></figure>
 
-<h2 id="FIO参数说明"><a href="#FIO参数说明" class="headerlink" title="FIO参数说明"></a>FIO参数说明</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">filename=/dev/sdb1       测试文件名称，通常选择需要测试的盘的data目录。</span><br><span class="line">direct=1                 测试过程绕过机器自带的buffer。使测试结果更真实。</span><br><span class="line">bs=16k                   单次io的块文件大小为16k</span><br><span class="line">bsrange=512-2048         同上，提定数据块的大小范围</span><br><span class="line">size=5g    本次的测试文件大小为5g，以每次4k的io进行测试。</span><br><span class="line">numjobs=30               本次的测试线程为30.</span><br><span class="line">runtime=1000             测试时间为1000秒，如果不写则一直将5g文件分4k每次写完为止。</span><br><span class="line">ioengine=psync           io引擎使用pync方式</span><br><span class="line">rwmixwrite=30            在混合读写的模式下，写占30%</span><br><span class="line">group_reporting          关于显示结果的，汇总每个进程的信息</span><br><span class="line">lockmem=1g               只使用1g内存进行测试。</span><br><span class="line">zero_buffers             用0初始化系统buffer。</span><br><span class="line">nrfiles=8                每个进程生成文件的数量</span><br></pre></td></tr></table></figure>
+<h2 id="FIO参数说明"><a href="#FIO参数说明" class="headerlink" title="FIO参数说明"></a>FIO参数说明</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">filename=/dev/sdb1       测试文件名称，通常选择需要测试的盘的data目录。</span><br><span class="line">direct=1                 测试过程绕过机器自带的buffer。使测试结果更真实。</span><br><span class="line">bs=16k                   单次io的块文件大小为16k</span><br><span class="line">bsrange=512-2048         同上，提定数据块的大小范围</span><br><span class="line">size=5g    本次的测试文件大小为5g，以每次4k的io进行测试。</span><br><span class="line">numjobs=30               本次的测试线程为30.</span><br><span class="line">runtime=1000             测试时间为1000秒，如果不写则一直将5g文件分4k每次写完为止。</span><br><span class="line">ioengine=psync           io引擎使用pync方式</span><br><span class="line">rwmixwrite=30            在混合读写的模式下，写占30%</span><br><span class="line">group_reporting          关于显示结果的，汇总每个进程的信息</span><br><span class="line">lockmem=1g               只使用1g内存进行测试。</span><br><span class="line">zero_buffers             用0初始化系统buffer。</span><br><span class="line">nrfiles=8                每个进程生成文件的数量</span><br><span class="line">log_avg_msec=1000        日志打印时间</span><br></pre></td></tr></table></figure>
 <p>fio的读写模式</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">rw=read 顺序读</span><br><span class="line">rw=write 顺序写</span><br><span class="line">rw=readwrite 顺序混合读写</span><br><span class="line">rw=randwrite 随机写</span><br><span class="line">rw=randread 随机读</span><br><span class="line">rw=randrw 随机混合读写</span><br></pre></td></tr></table></figure>
 
 <h2 id="FIO文件"><a href="#FIO文件" class="headerlink" title="FIO文件"></a>FIO文件</h2><p>我们可以需要进行的测试的fio参数写入到*.fio文件中</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">[global]</span><br><span class="line">ioengine=rbd</span><br><span class="line">rbdname=disk01</span><br><span class="line">clientname=admin</span><br><span class="line">pool=rbd</span><br><span class="line">bs=40k</span><br><span class="line">size=1M</span><br><span class="line">iodepth=32</span><br><span class="line">numjobs=1</span><br><span class="line">group_reporting</span><br><span class="line">name=file</span><br><span class="line">direct=1</span><br><span class="line"></span><br><span class="line">[seq-write]</span><br><span class="line">rw=write</span><br><span class="line">stonewall</span><br><span class="line"></span><br><span class="line">[rand-write]</span><br><span class="line">rw=randwrite</span><br><span class="line"></span><br><span class="line">[seq-read]</span><br><span class="line">rw=read</span><br><span class="line">stonewall</span><br><span class="line"></span><br><span class="line">[rand-read]</span><br><span class="line">rw=randread</span><br><span class="line">stonewall</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">[global]</span><br><span class="line">ioengine=rbd</span><br><span class="line">rbdname=disk01</span><br><span class="line">clientname=admin</span><br><span class="line">pool=rbd</span><br><span class="line">bs=40k</span><br><span class="line">size=1M</span><br><span class="line">iodepth=32</span><br><span class="line">numjobs=1</span><br><span class="line">group_reporting</span><br><span class="line">name=file</span><br><span class="line">direct=1</span><br><span class="line">log_avg_msec=1000</span><br><span class="line">write_bw_log=rw</span><br><span class="line">write_lat_log=rw</span><br><span class="line">write_iops_log=rw</span><br><span class="line">[seq-write]</span><br><span class="line">rw=write</span><br><span class="line">stonewall</span><br><span class="line"></span><br><span class="line">[rand-write]</span><br><span class="line">rw=randwrite</span><br><span class="line"></span><br><span class="line">[seq-read]</span><br><span class="line">rw=read</span><br><span class="line">stonewall</span><br><span class="line"></span><br><span class="line">[rand-read]</span><br><span class="line">rw=randread</span><br><span class="line">stonewall</span><br></pre></td></tr></table></figure>
 <p>[global]为通用配置项，stonewall是几个测试任务的分隔符</p>
 <h2 id="FIO测试实例"><a href="#FIO测试实例" class="headerlink" title="FIO测试实例"></a>FIO测试实例</h2><p>在ceph集群中进行测试</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fio -ioengine=rbd -rbdname=disk01 -clientname=admin -pool=rbd -rw=write -bs=400k -size=2G -iodepth=32 -numjobs=1  -group_reporting -name=file</span><br></pre></td></tr></table></figure>
@@ -338,6 +337,16 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fio -filename=/dev/sdb1 -direct=1 -iodepth 1 -thread -rw=randwrite -ioengine=psync -bs=16k -size=200G -numjobs=30 -runtime=1000 -group_reporting -name=mytest</span><br></pre></td></tr></table></figure>
 <p>顺序写测试</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fio -filename=/dev/sdb1 -direct=1 -iodepth 1 -thread -rw=write -ioengine=psync -bs=16k -size=200G -numjobs=30 -runtime=1000 -group_reporting -name=mytes</span><br></pre></td></tr></table></figure>
+
+<h2 id="画图"><a href="#画图" class="headerlink" title="画图"></a>画图</h2><p>fio安装完后自带有一个高级脚本fio_generate_plots能够根据fio输出的数据进行画图。</p>
+<p>fio的输出日志主要包含三种：bw，lat和iops，设置这三种的参数如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">write_bw_log=rw</span><br><span class="line">write_lat_log=rw</span><br><span class="line">write_iops_log=rw</span><br></pre></td></tr></table></figure>
+<p>后面接的参数rw，是输出日志文件名的prefix，如最终会生成的日志文件如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">rw_iops.log</span><br><span class="line">rw_clat.log</span><br><span class="line">rw_slat.log</span><br><span class="line">rw_lat.log</span><br><span class="line">rw_bw.log</span><br></pre></td></tr></table></figure>
+<p>如果生成的文件名为rw_bw.1.log,可以执行下面语句：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">for i in clat lat slat bw iops;do mv rw_$i.1.log rw_$i.log;done</span><br></pre></td></tr></table></figure>
+<p>使用下面的命令即可自动画图：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fio_generate_plots bw</span><br></pre></td></tr></table></figure>
 
 
       
@@ -363,8 +372,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/11/26/dd/" rel="next" title="dd使用教程">
-                <i class="fa fa-chevron-left"></i> dd使用教程
+              <a href="/2019/11/28/hexo_config/" rel="next" title="hexo个人博客简单配置">
+                <i class="fa fa-chevron-left"></i> hexo个人博客简单配置
               </a>
             
           </div>
@@ -373,8 +382,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/11/27/test/" rel="prev" title="test">
-                test <i class="fa fa-chevron-right"></i>
+              <a href="/2019/12/06/compression/" rel="prev" title="bluestore压缩设置">
+                bluestore压缩设置 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -452,7 +461,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">14</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -489,7 +498,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#FIO的下载与安装"><span class="nav-number">1.</span> <span class="nav-text">FIO的下载与安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FIO参数说明"><span class="nav-number">2.</span> <span class="nav-text">FIO参数说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FIO文件"><span class="nav-number">3.</span> <span class="nav-text">FIO文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FIO测试实例"><span class="nav-number">4.</span> <span class="nav-text">FIO测试实例</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#FIO的下载与安装"><span class="nav-number">1.</span> <span class="nav-text">FIO的下载与安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FIO参数说明"><span class="nav-number">2.</span> <span class="nav-text">FIO参数说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FIO文件"><span class="nav-number">3.</span> <span class="nav-text">FIO文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FIO测试实例"><span class="nav-number">4.</span> <span class="nav-text">FIO测试实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#画图"><span class="nav-number">5.</span> <span class="nav-text">画图</span></a></li></ol></div>
             
 
           </div>
