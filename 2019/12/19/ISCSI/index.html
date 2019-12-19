@@ -86,11 +86,11 @@
 <meta property="og:site_name" content="李厅">
 <meta property="og:description" content="概念介绍SCSI 小型计算机系统接口 输入输出接口，主要用于磁盘、光盘、磁带机FC 光纤通道 适合千兆传输成熟的解决方案 速率、距离、稳定、简易DAS 直连式存储 存储设备通过SCSI或光纤直接连接到计算机 数据共享困难、占用计算机系统资源NAS 网络接入存储 通过网络交换机连接存储和服务器 用户通过TCP&#x2F;IP协议访问数据 采用文件共享协议 NFS、CIFS、HTTP 高效、可靠、高性价比 传输">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2019&#x2F;12&#x2F;19&#x2F;ISCSI&#x2F;image&#x2F;NASSAN&#x2F;NAS_SAN.png">
-<meta property="og:image" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2019&#x2F;12&#x2F;19&#x2F;ISCSI&#x2F;image&#x2F;NASSAN&#x2F;SAN.png">
-<meta property="og:updated_time" content="2019-12-19T12:52:07.000Z">
+<meta property="og:image" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2019&#x2F;12&#x2F;19&#x2F;ISCSI&#x2F;NAS_SAN.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2019&#x2F;12&#x2F;19&#x2F;ISCSI&#x2F;SAN.png">
+<meta property="og:updated_time" content="2019-12-19T12:56:36.282Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2019&#x2F;12&#x2F;19&#x2F;ISCSI&#x2F;image&#x2F;NASSAN&#x2F;NAS_SAN.png">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2019&#x2F;12&#x2F;19&#x2F;ISCSI&#x2F;NAS_SAN.png">
 
 
 
@@ -282,7 +282,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-19T20:52:19+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-19T20:56:36+08:00">
                 2019-12-19
               </time>
             
@@ -321,14 +321,14 @@
 
       
         <h2 id="概念介绍"><a href="#概念介绍" class="headerlink" title="概念介绍"></a>概念介绍</h2><p>SCSI 小型计算机系统接口 输入输出接口，主要用于磁盘、光盘、磁带机<br>FC 光纤通道 适合千兆传输成熟的解决方案 速率、距离、稳定、简易<br>DAS 直连式存储 存储设备通过SCSI或光纤直接连接到计算机 数据共享困难、占用计算机系统资源<br>NAS 网络接入存储 通过网络交换机连接存储和服务器 用户通过TCP/IP协议访问数据 采用文件共享协议 NFS、CIFS、HTTP 高效、可靠、高性价比 传输能力受到网络带宽的限制<br>SAN 存储区域网络 通过光纤交换机、路由、集线器，将磁盘阵列、磁带与相关的服务器连接的高速专用子网。</p>
-<p><img src="/2019/12/19/ISCSI/image/NASSAN/NAS_SAN.png" alt="IMAGE"></p>
+<p><img src="/2019/12/19/ISCSI/NAS_SAN.png" alt="IMAGE"></p>
 <h2 id="DAS基础概念："><a href="#DAS基础概念：" class="headerlink" title="DAS基础概念："></a>DAS基础概念：</h2><p>DAS技术是最早被采用的存储技术，如同PC机的结构，是把外部的数据存储设备都直接挂在服务器内部的总线上，数据存储设备是服务器结构一部分，但由于这种存储技术是把设备直接挂在服务器上，随着需求的不断增大，越来越多的设备添加到网络环境中，导致服务器和存储独立数量较多，资源利用率低下，使得数据共享受到严重的限制。因此适用在一些小型网络应用中。</p>
 <p>DAS存储更多的依赖服务器主机操作系统进行数据的IO读写和存储维护管理，数据备份和恢复要求占用服务器主机资源（包括CPU、系统IO等），数据流需要回流主机再到服务器连接着的磁带机（库），数据备份通常占用服务器主机资源20-30%，因此许多企业用户的日常数据备份常常在深夜或业务系统不繁忙时进行，以免影响正常业务系统的运行。直连式存储的数据量越大，备份和恢复的时间就越长，对服务器硬件的依赖性和影响就越大。</p>
 <p>直连式存储与服务器主机之间的连接通道通常采用SCSI连接，随着服务器CPU的处理能力越来越强，存储硬盘空间越来越大，阵列的硬盘数量越来越多，SCSI通道将会成为IO瓶颈；服务器主机SCSI ID资源有限，能够建立的SCSI通道连接有限。</p>
 <p>无论直连式存储还是服务器主机的扩展，从一台服务器扩展为多台服务器组成的群集(Cluster)，或存储阵列容量的扩展，都会造成业务系统的停机，从而给企业带来经济损失，对于银行、电信、传媒等行业7×24小时服务的关键业务系统，这是不可接受的。并且直连式存储或服务器主机的升级扩展，只能由原设备厂商提供，往往受原设备厂商限制。</p>
 <h3 id="DAS的优点："><a href="#DAS的优点：" class="headerlink" title="DAS的优点："></a>DAS的优点：</h3><p>1、部署简单 2、成本低 3、适合本地数据存储</p>
 <h3 id="DAS存储缺点"><a href="#DAS存储缺点" class="headerlink" title="DAS存储缺点:"></a>DAS存储缺点:</h3><p>1、扩展性差 2、资源浪费 3、管理分散 4、异构化问题 5、数据备份问题</p>
-<h2 id="SAN存储基本结构"><a href="#SAN存储基本结构" class="headerlink" title="SAN存储基本结构"></a>SAN存储基本结构</h2><h3 id="SAN存储定义及组网"><a href="#SAN存储定义及组网" class="headerlink" title="SAN存储定义及组网"></a>SAN存储定义及组网</h3><p>SAN：存储区域网络（Storage Area Networks）是通过专用高速网将一个或多个网络存储设备和服务器连接起来的专用存储系统。<br><img src="/2019/12/19/ISCSI/image/NASSAN/SAN.png" alt="IMAGE"><br>如上图，SAN有三种组网方式，分别为：<br>1、直连组网 2、单交换组网 3、双交换组网</p>
+<h2 id="SAN存储基本结构"><a href="#SAN存储基本结构" class="headerlink" title="SAN存储基本结构"></a>SAN存储基本结构</h2><h3 id="SAN存储定义及组网"><a href="#SAN存储定义及组网" class="headerlink" title="SAN存储定义及组网"></a>SAN存储定义及组网</h3><p>SAN：存储区域网络（Storage Area Networks）是通过专用高速网将一个或多个网络存储设备和服务器连接起来的专用存储系统。<br><img src="/2019/12/19/ISCSI/SAN.png" alt="IMAGE"><br>如上图，SAN有三种组网方式，分别为：<br>1、直连组网 2、单交换组网 3、双交换组网</p>
 <h3 id="SAN组件介绍："><a href="#SAN组件介绍：" class="headerlink" title="SAN组件介绍："></a>SAN组件介绍：</h3><p>存储阵列设备<br>光纤交换机<br>主机总线设配卡<br>光纤线缆</p>
 <h3 id="SAN存储特点"><a href="#SAN存储特点" class="headerlink" title="SAN存储特点"></a>SAN存储特点</h3><p>业务高性能<br>集中、远程、灵活的管理<br>存储资源动态共享<br>不占用业务网络资源<br>高扩展性<br>兼容SCSI存储设备</p>
 <h2 id="ISCSI组成"><a href="#ISCSI组成" class="headerlink" title="ISCSI组成"></a>ISCSI组成</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">ISCSI Initiator     客户端</span><br><span class="line">    1、软件形式</span><br><span class="line">        在iscsi服务器上安装initiator软件后，initiator软件将以太网卡虚拟成ISCSI卡,从而实现主机和iscsi存储设备之间的iscsi和tcp/ip协议传输功能。</span><br><span class="line">        成本低，但iscsi报文转换需要消耗服务器cpu资源，高io和高性能环境下不适用。</span><br><span class="line">    2、硬件形式</span><br><span class="line">        使用HBA Host Bus Adapter,initiator的硬件设备，安装在ISCSI服务器上。</span><br><span class="line">        无需占用iscsi服务器的cpu资源，更好的性能。</span><br><span class="line"></span><br><span class="line">ISCSI Target        服务端</span><br><span class="line">    一个可以用于存储数据的有ISCSI功能的设备都可以被称为‘ ISCSI Target’ </span><br><span class="line">    linux下的开源软件 ISCSI Enterprirse Target</span><br><span class="line">    </span><br><span class="line">    利用target软件可以将服务器存储空间分配给客户机使用，客户机可以像使用本地磁盘一样使用ISCSI磁盘。</span><br><span class="line">    包括格式化，分区，对齐。每个用户可以向磁盘读写数据，互不干扰。支持权限控制。</span><br><span class="line">    ISCSI是通过TCP/IP网络进行传输的，以太网的速度很大程度上决定了ISCSI的性能。万兆网络，健壮的网络环境。</span><br></pre></td></tr></table></figure>
