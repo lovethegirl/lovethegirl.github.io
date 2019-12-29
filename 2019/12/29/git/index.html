@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="git使用push提交到远程仓库出现 The requested URL returned error: 403问题描述：新建了一个新github帐号，本地建立好项目之后，使用命令：$ git push -u origin master时出现以下错误 12remote: Permission to userName&#x2F;repositorieName.git denied to clxering.fa">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GIT使用总结">
+<meta property="og:url" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2019&#x2F;12&#x2F;29&#x2F;git&#x2F;index.html">
+<meta property="og:site_name" content="李厅">
+<meta property="og:description" content="git使用push提交到远程仓库出现 The requested URL returned error: 403问题描述：新建了一个新github帐号，本地建立好项目之后，使用命令：$ git push -u origin master时出现以下错误 12remote: Permission to userName&#x2F;repositorieName.git denied to clxering.fa">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2019&#x2F;12&#x2F;29&#x2F;git&#x2F;fork.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2019&#x2F;12&#x2F;29&#x2F;git&#x2F;pr.png">
+<meta property="og:updated_time" content="2019-12-29T15:25:03.435Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2019&#x2F;12&#x2F;29&#x2F;git&#x2F;fork.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lovethegirl.github.io/2019/12/29/git/"/>
+
+
+
+
+
+  <title>GIT使用总结 | 李厅</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">李厅</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://lovethegirl.github.io/2019/12/29/git/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="David Lee">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="李厅">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">GIT使用总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-29T23:25:03+08:00">
+                2019-12-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="git使用push提交到远程仓库出现-The-requested-URL-returned-error-403"><a href="#git使用push提交到远程仓库出现-The-requested-URL-returned-error-403" class="headerlink" title="git使用push提交到远程仓库出现 The requested URL returned error: 403"></a>git使用push提交到远程仓库出现 The requested URL returned error: 403</h2><p>问题描述：新建了一个新github帐号，本地建立好项目之后，使用命令：$ git push -u origin master时出现以下错误</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">remote: Permission to userName/repositorieName.git denied to clxering.</span><br><span class="line">fatal: unable to access &apos;https://github.com/userName/repositorieName.git/&apos;: The requested URL returned error: 403</span><br></pre></td></tr></table></figure>
+<p>原因是系统保存了原来的账号信息，使用新账号时，信息不一致。<br>解决方法：在cmd中输入rundll32.exe keymgr.dll,KRShowKeyMgr，然后删除github相关内容的配置。</p>
+<h2 id="Linux系统向github提交代码是老要输入用户名密码"><a href="#Linux系统向github提交代码是老要输入用户名密码" class="headerlink" title="Linux系统向github提交代码是老要输入用户名密码"></a>Linux系统向github提交代码是老要输入用户名密码</h2><p>解决方案：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">输入： git config --global credential.helper store</span><br><span class="line">这一步会在用户目录下的.gitconfig文件最后添加:</span><br><span class="line"> [credential]</span><br><span class="line">        helper = store</span><br><span class="line"></span><br><span class="line">之后输入的账户和密码信息会被记录</span><br><span class="line"></span><br><span class="line">git config --global user.email &quot;alice@aol.com&quot; 操作的是email</span><br><span class="line">git config --global push.default matching 操作的就是push段中的default字段</span><br><span class="line">git config --global credential.helper store 操作的是最后一行的值</span><br></pre></td></tr></table></figure>
+
+<h2 id="github上向开源项目提交代码"><a href="#github上向开源项目提交代码" class="headerlink" title="github上向开源项目提交代码"></a>github上向开源项目提交代码</h2><h3 id="首先将该项目fork到自己的账户上"><a href="#首先将该项目fork到自己的账户上" class="headerlink" title="首先将该项目fork到自己的账户上"></a>首先将该项目fork到自己的账户上</h3><p><img src="/2019/12/29/git/fork.png" alt="image"></p>
+<h3 id="将代码clone到本地"><a href="#将代码clone到本地" class="headerlink" title="将代码clone到本地"></a>将代码clone到本地</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/pkulijiawei/ceph.git</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建一个bug的分支，并到该分支上"><a href="#创建一个bug的分支，并到该分支上" class="headerlink" title="创建一个bug的分支，并到该分支上"></a>创建一个bug的分支，并到该分支上</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git brancj issue-44012</span><br><span class="line">git checkout issue-44012</span><br></pre></td></tr></table></figure>
+
+<h3 id="修改代码后提交"><a href="#修改代码后提交" class="headerlink" title="修改代码后提交"></a>修改代码后提交</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">git add -A #修改代码放入缓存区</span><br><span class="line"></span><br><span class="line">git commit -s -m &quot;test 3&quot; #提交代码到本地库</span><br><span class="line"></span><br><span class="line">git push origin issue-44012 #推送本地库代码到远程库</span><br><span class="line"></span><br><span class="line">git log #查看提交日志</span><br></pre></td></tr></table></figure>
+<p>有时候我们执行 git push 将一个 new branch 推送到远程仓库的时候，会被远程仓库阻止。</p>
+<p>可能是我们没有相应的权限吧。然而，我在 git push 的时候加上 –no-thin 参数，就可以将其推送上去了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push --no-thin origin issue-44013</span><br></pre></td></tr></table></figure>
+<h3 id="提交代码"><a href="#提交代码" class="headerlink" title="提交代码"></a>提交代码</h3><p>登陆到自己的github账号，找到相应工程，点击进入，创建new pull request，选择要提交的分支，编辑提交说明后提交代码，<br>等待review完成并merge到master分支后，就完成了一次开源代码贡献。</p>
+<p><img src="/2019/12/29/git/pr.png" alt="image"></p>
+<h3 id="更新提交信息"><a href="#更新提交信息" class="headerlink" title="更新提交信息"></a>更新提交信息</h3><p>一、如果已经push到远端服务器，想修改已经提交过的commit信息  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># git commit --amend  </span><br><span class="line">修改commit 信息 </span><br><span class="line"># git push --no-thin origin HEAD:refs/for/master  </span><br><span class="line">重新提交gerrit审批</span><br></pre></td></tr></table></figure>
+<p>二、如果已经push到远端服务器,有漏掉的test.txt文件想提交到上一次的commit信息  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1.添加test.txt  </span><br><span class="line"># git add test.txt  </span><br><span class="line">2.修改commit信息;保存:Ctrl + o; 回车 ;退出:Ctrl + x   </span><br><span class="line"># git commit --amend  </span><br><span class="line">3.重新push到远端服务器  </span><br><span class="line">git push --no-thin origin HEAD:refs/for/master  </span><br><span class="line">强制推送</span><br><span class="line">git push -f</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/24/ceph_export_import/" rel="next" title="ceph资源池之间的image备份策略">
+                <i class="fa fa-chevron-left"></i> ceph资源池之间的image备份策略
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">David Lee</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#git使用push提交到远程仓库出现-The-requested-URL-returned-error-403"><span class="nav-number">1.</span> <span class="nav-text">git使用push提交到远程仓库出现 The requested URL returned error: 403</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux系统向github提交代码是老要输入用户名密码"><span class="nav-number">2.</span> <span class="nav-text">Linux系统向github提交代码是老要输入用户名密码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#github上向开源项目提交代码"><span class="nav-number">3.</span> <span class="nav-text">github上向开源项目提交代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#首先将该项目fork到自己的账户上"><span class="nav-number">3.1.</span> <span class="nav-text">首先将该项目fork到自己的账户上</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将代码clone到本地"><span class="nav-number">3.2.</span> <span class="nav-text">将代码clone到本地</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建一个bug的分支，并到该分支上"><span class="nav-number">3.3.</span> <span class="nav-text">创建一个bug的分支，并到该分支上</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改代码后提交"><span class="nav-number">3.4.</span> <span class="nav-text">修改代码后提交</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提交代码"><span class="nav-number">3.5.</span> <span class="nav-text">提交代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更新提交信息"><span class="nav-number">3.6.</span> <span class="nav-text">更新提交信息</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">David Lee</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
