@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Ceph 将数据存储在存储池中。存储池是用于存储对象的逻辑组。如果您先部署集群而不创建存储池，Ceph 会使用默认存储池来存储数据。 将存储池与应用关联在使用存储池之前，需要将它们与应用关联。将与 CephFS 搭配使用或由对象网关自动创建的存储池会自动关联。需要使用 rbd 工具初始化要与 RBD 搭配使用的存储池。 1root # ceph osd pool application enabl">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ceph pool池的相关操作">
+<meta property="og:url" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2020&#x2F;01&#x2F;03&#x2F;pool&#x2F;index.html">
+<meta property="og:site_name" content="李厅">
+<meta property="og:description" content="Ceph 将数据存储在存储池中。存储池是用于存储对象的逻辑组。如果您先部署集群而不创建存储池，Ceph 会使用默认存储池来存储数据。 将存储池与应用关联在使用存储池之前，需要将它们与应用关联。将与 CephFS 搭配使用或由对象网关自动创建的存储池会自动关联。需要使用 rbd 工具初始化要与 RBD 搭配使用的存储池。 1root # ceph osd pool application enabl">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-03T13:06:04.000Z">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lovethegirl.github.io/2020/01/03/pool/"/>
+
+
+
+
+
+  <title>ceph pool池的相关操作 | 李厅</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">李厅</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://lovethegirl.github.io/2020/01/03/pool/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="David Lee">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="李厅">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ceph pool池的相关操作</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-03T21:10:13+08:00">
+                2020-01-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Ceph 将数据存储在存储池中。存储池是用于存储对象的逻辑组。如果您先部署集群而不创建存储池，Ceph 会使用默认存储池来存储数据。</p>
+<h2 id="将存储池与应用关联"><a href="#将存储池与应用关联" class="headerlink" title="将存储池与应用关联"></a>将存储池与应用关联</h2><p>在使用存储池之前，需要将它们与应用关联。将与 CephFS 搭配使用或由对象网关自动创建的存储池会自动关联。需要使用 rbd 工具初始化要与 RBD 搭配使用的存储池。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root # ceph osd pool application enable pool_name application_name</span><br></pre></td></tr></table></figure>
+
+<p>一个存储池可以与多个应用关联，每个应用都可具有自己的元数据。可使用以下命令显示给定存储池的应用元数据：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root # ceph osd pool application get pool_name</span><br></pre></td></tr></table></figure>
+<h2 id="操作存储池"><a href="#操作存储池" class="headerlink" title="操作存储池"></a>操作存储池</h2><p>了解如何列出、创建和删除存储池，以及如何显示存储池统计数字或管理存储池快照。</p>
+<h3 id="列出存储池"><a href="#列出存储池" class="headerlink" title="列出存储池"></a>列出存储池</h3><p>要列出集群的存储池，请执行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root # ceph osd lspools</span><br><span class="line"></span><br><span class="line">0 rbd, </span><br><span class="line">1 photo_collection, </span><br><span class="line">2 foo_pool,</span><br></pre></td></tr></table></figure>
+<h3 id="创建存储池"><a href="#创建存储池" class="headerlink" title="创建存储池"></a>创建存储池</h3><p>要创建副本存储池，请执行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root # ceph osd pool create pool_name pg_num pgp_num replicated crush_ruleset_name  expected_num_objects</span><br></pre></td></tr></table></figure>
+<p>要创建纠删码池，请执行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root # ceph osd pool create pool_name pg_num pgp_num erasure erasure_code_profile crush_ruleset_name expected_num_objects</span><br></pre></td></tr></table></figure>
+
+<p>pool_name</p>
+<p>存储池的名称，必须唯一。必须指定此选项。</p>
+<p>pg_num</p>
+<p>存储池的归置组总数。必须指定此选项。默认值是 8。</p>
+<p>pgp_num</p>
+<p>用于归置数据的归置组总数。此数量应该与归置组总数相等，归置组拆分情况除外。必须指定此选项。默认值是 8。</p>
+<p>pgp_type</p>
+<p>存储池类型，可以是 replicated（用于保留对象的多个副本，以便从失败的 OSD 恢复）或 erasure（用于获得某种通用 RAID5 功能）。副本池需要的原始存储较多，但可实现所有 Ceph 操作。纠删码池需要的原始存储较少，但只实现一部分可用的操作。默认值是“replicated”。</p>
+<p>crush_ruleset_name</p>
+<p>此存储池的 crush 规则组的名称。如果所指定的规则组不存在，则创建副本池的操作将会失败，并显示 -ENOENT。但副本池将使用指定的名称创建新的纠删规则组。对于纠删码池，默认值是“erasure-code”。对于副本池，将选取 Ceph 配置变量 osd_osd_pool_default_crush_replicated_ruleset。</p>
+<p>erasure_code_profile=profile</p>
+<p>仅适用于纠删码池。使用纠删码配置。该配置必须是 osd erasure-code-profile set 所定义的现有配置。</p>
+<p>expected_num_objects</p>
+<p>此存储池的预期对象数。如果设置此值，PG 文件夹拆分发生于存储池创建时。这可避免因运行时文件夹拆分导致的延迟影响。</p>
+<h3 id="设置存储池配额"><a href="#设置存储池配额" class="headerlink" title="设置存储池配额"></a>设置存储池配额</h3><p>您可以设置存储池配额，限定每个存储池的最大字节数和/或最大对象数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root # ceph osd pool set-quota pool-name max_objects obj-count max_bytes bytes</span><br></pre></td></tr></table></figure>
+
+<h3 id="删除存储池"><a href="#删除存储池" class="headerlink" title="删除存储池"></a>删除存储池</h3><p>存储池中可能包含重要数据。删除存储池会导致存储池中的所有数据消失，且无法恢复。</p>
+<p>不小心删除存储池十分危险，因此 Ceph 实施了两个机制来防止删除存储池。要删除存储池，必须先禁用这两个机制。</p>
+<p>第一个机制是 NODELETE 标志。每个存储池都有这个标志，其默认值是“false”。要确定某个存储池的此标志值，请运行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root # ceph osd pool get pool_name nodelete</span><br></pre></td></tr></table></figure>
+
+<p>如果命令输出 nodelete: true，则只有在使用以下命令更改该标志后，才能删除存储池：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph osd pool set pool_name nodelete false</span><br></pre></td></tr></table></figure>
+
+<p>第二个机制是集群范围的配置参数 mon allow pool delete，其默认值为“false”。这表示默认不能删除存储池。</p>
+<p>若要规避此安全设置删除存储池，可以临时将 mon allow pool delete 设置为“true”，删除存储池，然后将该参数恢复为“false”：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root # ceph tell mon.* injectargs --mon-allow-pool-delete=true</span><br><span class="line"></span><br><span class="line">root # ceph osd pool delete pool_name pool_name --yes-i-really-really-mean-it</span><br><span class="line"></span><br><span class="line">root # ceph tell mon.* injectargs --mon-allow-pool-delete=false</span><br></pre></td></tr></table></figure>
+
+<p>injectargs 命令会显示以下讯息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">injectargs:mon_allow_pool_delete = &apos;true&apos; (not observed, change may require restart)</span><br></pre></td></tr></table></figure>
+
+<h3 id="重命名存储池"><a href="#重命名存储池" class="headerlink" title="重命名存储池"></a>重命名存储池</h3><p>要重命名存储池，请执行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root # ceph osd pool rename current-pool-name new-pool-name</span><br></pre></td></tr></table></figure>
+<p>如果重命名了存储池，且为经过身份验证的用户使用了按存储池功能，则必须用新的存储池名称更新用户的功能。</p>
+<h3 id="显示存储池统计数字"><a href="#显示存储池统计数字" class="headerlink" title="显示存储池统计数字"></a>显示存储池统计数字</h3><p>要显示存储池的用量统计数字，请执行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">root # rados df</span><br><span class="line">pool name  category  KB  objects   lones  degraded  unfound  rd  rd KB  wr  wr KB</span><br><span class="line">cold-storage    -   228   1         0      0          0       0   0      1   228</span><br><span class="line">data            -    1    4         0      0          0       0   0      4    4</span><br><span class="line">hot-storage     -    1    2         0      0          0       15  10     5   231</span><br><span class="line">metadata        -    0    0         0      0          0       0   0      0    0</span><br><span class="line">pool1           -    0    0         0      0          0       0   0      0    0</span><br><span class="line">rbd             -    0    0         0      0          0       0   0      0    0</span><br><span class="line">total used          266268          7</span><br><span class="line">total avail       27966296</span><br><span class="line">total space       28232564</span><br></pre></td></tr></table></figure>
+
+<h3 id="设置存储池的值"><a href="#设置存储池的值" class="headerlink" title="设置存储池的值"></a>设置存储池的值</h3><p>要设置存储池的值，请执行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root # ceph osd pool set pool-name key value</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">size</span><br><span class="line"></span><br><span class="line">设置存储池中对象的副本数。</span><br><span class="line"></span><br><span class="line">min_size</span><br><span class="line"></span><br><span class="line">设置 I/O 所需的最小副本数。</span><br><span class="line"></span><br><span class="line">crash_replay_interval</span><br><span class="line"></span><br><span class="line">允许客户端重放已确认但未提交的请求的秒数。</span><br><span class="line"></span><br><span class="line">pg_num</span><br><span class="line"></span><br><span class="line">存储池的归置组数。</span><br><span class="line"></span><br><span class="line">pgp_num</span><br><span class="line"></span><br><span class="line">计算数据归置时要使用的归置组的有效数量。</span><br><span class="line"></span><br><span class="line">crush_ruleset</span><br><span class="line"></span><br><span class="line">用于在集群中映射对象归置的规则组。</span><br><span class="line"></span><br><span class="line">hashpspool</span><br><span class="line"></span><br><span class="line">为给定存储池设置 (1) 或取消设置 (0) HASHPSPOOL 标志。启用此标志会更改算法，以采用更佳的方式将 PG 分配到 OSD 之间。对之前 HASHPSPOOL 标志设为 0 的存储池启用此标志后，集群会开始回填，以使所有 PG 都可再次正确归置。请注意，这可能会在集群上产生相当高的 I/O 负载，因此对高负载生产集群必须进行妥善规划。</span><br><span class="line"></span><br><span class="line">nodelete</span><br><span class="line"></span><br><span class="line">防止删除存储池。</span><br><span class="line"></span><br><span class="line">nopgchange</span><br><span class="line"></span><br><span class="line">防止更改存储池的 pg_num 和 pgp_num。</span><br><span class="line"></span><br><span class="line">nosizechange</span><br><span class="line"></span><br><span class="line">防止更改存储池的大小。</span><br><span class="line"></span><br><span class="line">write_fadvise_dontneed</span><br><span class="line"></span><br><span class="line">对给定存储池设置/取消设置 WRITE_FADVISE_DONTNEED 标志。</span><br><span class="line"></span><br><span class="line">noscrub、nodeep-scrub</span><br><span class="line"></span><br><span class="line">禁用（深层）整理 (scrub) 特定存储池的数据以解决临时高 I/O 负载问题。</span><br><span class="line"></span><br><span class="line">hit_set_type</span><br><span class="line"></span><br><span class="line">对快速缓存池启用命中集跟踪。请参见布隆过滤器以了解更多信息。此选项可用的值如下：bloom、explicit_hash、explicit_object。默认值是 bloom，其他值仅用于测试。</span><br><span class="line"></span><br><span class="line">hit_set_count</span><br><span class="line"></span><br><span class="line">要为快速缓存池存储的命中集数。该数值越高，ceph-osd 守护进程耗用的 RAM 越多。默认值是 0。</span><br><span class="line"></span><br><span class="line">hit_set_period</span><br><span class="line"></span><br><span class="line">快速缓存池的命中集期间的时长（以秒为单位）。该数值越高，ceph-osd 守护进程耗用的 RAM 越多。</span><br><span class="line"></span><br><span class="line">hit_set_fpp</span><br><span class="line"></span><br><span class="line">布隆命中集类型的误报率。请参见布隆过滤器以了解更多信息。有效范围是 0.0 - 1.0，默认值是 0.05</span><br><span class="line"></span><br><span class="line">use_gmt_hitset</span><br><span class="line"></span><br><span class="line">为快速缓存分层创建命中集时，强制 OSD 使用 GMT（格林威治标准时间）时戳。这可确保在不同时区中的节点返回相同的结果。默认值是 1。不应该更改此值。</span><br><span class="line"></span><br><span class="line">cache_target_dirty_ratio</span><br><span class="line"></span><br><span class="line">在快速缓存分层代理将已修改（脏）对象清理到后备存储池之前，包含此类对象的快速缓存池百分比。默认值是 .4</span><br><span class="line"></span><br><span class="line">cache_target_dirty_high_ratio</span><br><span class="line"></span><br><span class="line">在快速缓存分层代理将已修改（脏）对象清理到速度更快的后备存储池之前，包含此类对象的快速缓存池百分比。默认值是 .6。</span><br><span class="line"></span><br><span class="line">cache_target_full_ratio</span><br><span class="line"></span><br><span class="line">在快速缓存分层代理将未修改（干净）对象从快速缓存池逐出之前，包含此类对象的快速缓存池百分比。默认值是 .8</span><br><span class="line"></span><br><span class="line">target_max_bytes</span><br><span class="line"></span><br><span class="line">触发 max_bytes 阈值后，Ceph 将会开始清理或逐出对象。</span><br><span class="line"></span><br><span class="line">target_max_objects</span><br><span class="line"></span><br><span class="line">触发 max_objects 阈值时，Ceph 将开始清理或逐出对象。</span><br><span class="line"></span><br><span class="line">hit_set_grade_decay_rate</span><br><span class="line"></span><br><span class="line">两次连续的 hit_set 之间的温度降低率。默认值是 20。</span><br><span class="line"></span><br><span class="line">hit_set_search_last_n</span><br><span class="line"></span><br><span class="line">计算温度时在 hit_set 中对出现的项最多计 N 次。默认值是 1。</span><br><span class="line"></span><br><span class="line">cache_min_flush_age</span><br><span class="line"></span><br><span class="line">在快速缓存分层代理将对象从快速缓存池清理到存储池之前的时间（秒）。</span><br><span class="line"></span><br><span class="line">cache_min_evict_age</span><br><span class="line"></span><br><span class="line">在快速缓存分层代理将对象从快速缓存池中逐出之前的时间（秒）。</span><br><span class="line"></span><br><span class="line">fast_read</span><br><span class="line"></span><br><span class="line">如果对纠删码池启用此标志，则读取请求会向所有分片发出子读取命令，并一直等到接收到足够解码的分片，才会为客户端提供服务。对于 jerasure 和 isa 纠删插件，前 K 个副本返回时，就会使用从这些副本解码的数据立即处理客户端的请求。这有助于获得一些资源以提高性能。目前，此标志仅支持用于纠删码池。默认值是 0。</span><br><span class="line"></span><br><span class="line">scrub_min_interval</span><br><span class="line"></span><br><span class="line">集群负载低时整理 (scrub) 存储池的最小间隔（秒）。默认值 0 表示使用来自 Ceph 配置文件的 osd_scrub_min_interval 值。</span><br><span class="line"></span><br><span class="line">scrub_max_interval</span><br><span class="line"></span><br><span class="line">不论集群负载如何都整理 (scrub) 存储池的最大间隔（秒）。默认值 0 表示使用来自 Ceph 配置文件的 osd_scrub_max_interval 值。</span><br><span class="line"></span><br><span class="line">deep_scrub_interval</span><br><span class="line"></span><br><span class="line">深层整理 (scrub) 存储池的间隔（秒）。默认值 0 表示使用来自 Ceph 配置文件的 osd_deep_scrub 值。</span><br></pre></td></tr></table></figure>
+
+<h3 id="获取存储池的值"><a href="#获取存储池的值" class="headerlink" title="获取存储池的值"></a>获取存储池的值</h3><p>要获取存储池中的值，请执行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root # ceph osd pool get pool-name key</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">pg_num</span><br><span class="line"></span><br><span class="line">存储池的归置组数。</span><br><span class="line"></span><br><span class="line">pgp_num</span><br><span class="line"></span><br><span class="line">计算数据归置时要使用的归置组的有效数量。有效范围小于或等于 pg_num。</span><br></pre></td></tr></table></figure>
+
+<h3 id="设置对象副本数"><a href="#设置对象副本数" class="headerlink" title="设置对象副本数"></a>设置对象副本数</h3><p>要设置副本存储池上的对象副本数，请执行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">root # ceph osd pool set poolname size num-replicas</span><br><span class="line"></span><br><span class="line">num-replicas 包括对象本身。例如，如果您想用对象和对象的两个副本组成对象的三个实例，请指定 3。</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="获取对象副本数"><a href="#获取对象副本数" class="headerlink" title="获取对象副本数"></a>获取对象副本数</h3><p>要获取对象副本数，请执行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root # ceph osd dump | grep &apos;replicated size&apos;</span><br></pre></td></tr></table></figure>
+
+<p>7.2.11 增加归置组数<br>创建新存储池时，需指定存储池的归置组数（请参见第 7.2.2 节 “创建存储池”）。将更多 OSD 添加至集群后，出于性能和数据持久性原因，通常还需要增加归置组数。对于每个归置组，OSD 和监视器节点始终都需要用到内存、网络和 CPU，在恢复期间需求量甚至更大。因此，最大限度地减少归置组数可节省相当大的资源量。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root # ceph osd pool set rbd pg_num 4096</span><br></pre></td></tr></table></figure>
+
+<h3 id="添加存储池"><a href="#添加存储池" class="headerlink" title="添加存储池"></a>添加存储池</h3><p>在您首次部署集群之后，Ceph 会使用默认存储池来存储数据。之后，您可以使用以下命令创建新的存储池：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root # ceph osd pool create</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="存储池迁移"><a href="#存储池迁移" class="headerlink" title="存储池迁移"></a>存储池迁移</h2><p>迁移存储池的方法有多种。建议使用快速缓存层，因为该方法是透明的，能够减少集群停机时间并避免复制所有存储池的数据。</p>
+<p>7.3.1 使用快速缓存层迁移<br>该方法的原理十分简单，只需将需要迁移的存储池按相反的顺序加入快速缓存层中即可。有关快速缓存层的详细信息，请参见第 10 章 “快速缓存分层”。例如，要将名为“testpool”的副本池迁移到纠删码池，请执行以下步骤：</p>
+<h3 id="创建一个名为“newpool”的新纠删码池："><a href="#创建一个名为“newpool”的新纠删码池：" class="headerlink" title="创建一个名为“newpool”的新纠删码池："></a>创建一个名为“newpool”的新纠删码池：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@minion &gt; ceph osd pool create newpool 4096 4096 erasure default</span><br></pre></td></tr></table></figure>
+
+<p>您现在有两个池，即装满数据的原始副本池“testpool”和新的空纠删码池“newpool”：</p>
+<h3 id="设置快速缓存层，并将副本池“testpool”配置为快速缓存池："><a href="#设置快速缓存层，并将副本池“testpool”配置为快速缓存池：" class="headerlink" title="设置快速缓存层，并将副本池“testpool”配置为快速缓存池："></a>设置快速缓存层，并将副本池“testpool”配置为快速缓存池：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@minion &gt; ceph osd tier add newpool testpool --force-nonempty</span><br><span class="line">root@minion &gt; ceph osd cache-mode testpool forward</span><br></pre></td></tr></table></figure>
+
+<h3 id="强制快速缓存池将所有对象移到新池中："><a href="#强制快速缓存池将所有对象移到新池中：" class="headerlink" title="强制快速缓存池将所有对象移到新池中："></a>强制快速缓存池将所有对象移到新池中：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@minion &gt; rados -p testpool cache-flush-evict-all</span><br></pre></td></tr></table></figure>
+
+<h3 id="数据清理"><a href="#数据清理" class="headerlink" title="数据清理"></a>数据清理</h3><p>将所有客户端切换到新池。您需要指定一个覆盖层，以便在旧池中搜索对象，直到所有数据都已清理到新的纠删码池。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@minion &gt; ceph osd tier set-overlay newpool testpool</span><br></pre></td></tr></table></figure>
+
+<p>有了覆盖层，所有操作都会转到旧的副本池“testpool”：</p>
+<h3 id="设置覆盖层"><a href="#设置覆盖层" class="headerlink" title="设置覆盖层"></a>设置覆盖层</h3><p>现在，您可以将所有客户端都切换为访问新池中的对象。所有数据都迁移到纠删码池“newpool”后，删除覆盖层和旧超速缓冲池“testpool”：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@minion &gt; ceph osd tier remove-overlay newpool</span><br><span class="line">root@minion &gt; ceph osd tier remove newpool testpool</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="存储池快照"><a href="#存储池快照" class="headerlink" title="存储池快照"></a>存储池快照</h2><p>存储池快照是整个 Ceph 存储池的状态快照。通过存储池快照，可以保留存储池状态的历史。创建存储池快照可能需要大量存储空间，具体取决于存储池的大小。在创建存储池快照之前，始终需要检查相关存储是否有足够的磁盘空间。</p>
+<h3 id="创建存储池快照"><a href="#创建存储池快照" class="headerlink" title="创建存储池快照"></a>创建存储池快照</h3><p>要创建存储池快照，请执行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root # ceph osd pool mksnap pool-name snap-name</span><br><span class="line"></span><br><span class="line">例如：</span><br><span class="line"></span><br><span class="line">root # ceph osd pool mksnap pool1 snapshot1</span><br><span class="line"></span><br><span class="line">created pool pool1 snap snapshot1</span><br></pre></td></tr></table></figure>
+
+<h3 id="删除存储池快照"><a href="#删除存储池快照" class="headerlink" title="删除存储池快照"></a>删除存储池快照</h3><p>要删除存储池快照，请执行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root # ceph osd pool rmsnap pool-name snap-name</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/03/xfs/" rel="next" title="xfs文件系统恢复">
+                <i class="fa fa-chevron-left"></i> xfs文件系统恢复
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/01/03/iops/" rel="prev" title="iops介绍">
+                iops介绍 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">David Lee</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#将存储池与应用关联"><span class="nav-number">1.</span> <span class="nav-text">将存储池与应用关联</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#操作存储池"><span class="nav-number">2.</span> <span class="nav-text">操作存储池</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#列出存储池"><span class="nav-number">2.1.</span> <span class="nav-text">列出存储池</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建存储池"><span class="nav-number">2.2.</span> <span class="nav-text">创建存储池</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置存储池配额"><span class="nav-number">2.3.</span> <span class="nav-text">设置存储池配额</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除存储池"><span class="nav-number">2.4.</span> <span class="nav-text">删除存储池</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重命名存储池"><span class="nav-number">2.5.</span> <span class="nav-text">重命名存储池</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#显示存储池统计数字"><span class="nav-number">2.6.</span> <span class="nav-text">显示存储池统计数字</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置存储池的值"><span class="nav-number">2.7.</span> <span class="nav-text">设置存储池的值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取存储池的值"><span class="nav-number">2.8.</span> <span class="nav-text">获取存储池的值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置对象副本数"><span class="nav-number">2.9.</span> <span class="nav-text">设置对象副本数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取对象副本数"><span class="nav-number">2.10.</span> <span class="nav-text">获取对象副本数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加存储池"><span class="nav-number">2.11.</span> <span class="nav-text">添加存储池</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存储池迁移"><span class="nav-number">3.</span> <span class="nav-text">存储池迁移</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建一个名为“newpool”的新纠删码池："><span class="nav-number">3.1.</span> <span class="nav-text">创建一个名为“newpool”的新纠删码池：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置快速缓存层，并将副本池“testpool”配置为快速缓存池："><span class="nav-number">3.2.</span> <span class="nav-text">设置快速缓存层，并将副本池“testpool”配置为快速缓存池：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#强制快速缓存池将所有对象移到新池中："><span class="nav-number">3.3.</span> <span class="nav-text">强制快速缓存池将所有对象移到新池中：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据清理"><span class="nav-number">3.4.</span> <span class="nav-text">数据清理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置覆盖层"><span class="nav-number">3.5.</span> <span class="nav-text">设置覆盖层</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存储池快照"><span class="nav-number">4.</span> <span class="nav-text">存储池快照</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建存储池快照"><span class="nav-number">4.1.</span> <span class="nav-text">创建存储池快照</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除存储池快照"><span class="nav-number">4.2.</span> <span class="nav-text">删除存储池快照</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">David Lee</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
