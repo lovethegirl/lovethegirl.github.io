@@ -79,14 +79,14 @@
 
 
 
-<meta name="description" content="dd是 Linux&#x2F;UNIX 下的一个非常有用的命令，作用是用指定大小的块拷贝一个文件，并在拷贝的同时进行指定的转换。 dd的语法12345678910111213141516171819if =输入文件（或设备名称）。of =输出文件（或设备名称）。ibs = bytes 一次读取bytes字节，即读入缓冲区的字节数。skip = blocks 跳过读入缓冲区开头的ibs*blocks块。obs">
+<meta name="description" content="内存分配一：从全局存储区域分配：这时内存在程序编译阶段就已经分配好，该内存在程序运行的整个周期都有效，如：全局变量、static静态变量。 二：从栈区分配：在执行函数的时候，函数中的局部变量的存储单元都可以从栈中分配，函数执行结束后这些存储单元都会被自动释放，效率很高 但是分配的内存容量有限。 三：从堆中分配：也称为动态分配内存，在程序运行期间，可以使用malloc和new申请任意数量的内存单元，">
 <meta property="og:type" content="article">
-<meta property="og:title" content="dd使用教程">
-<meta property="og:url" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2019&#x2F;11&#x2F;26&#x2F;dd&#x2F;index.html">
+<meta property="og:title" content="c++基础">
+<meta property="og:url" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2020&#x2F;01&#x2F;17&#x2F;c++kn&#x2F;index.html">
 <meta property="og:site_name" content="李厅">
-<meta property="og:description" content="dd是 Linux&#x2F;UNIX 下的一个非常有用的命令，作用是用指定大小的块拷贝一个文件，并在拷贝的同时进行指定的转换。 dd的语法12345678910111213141516171819if =输入文件（或设备名称）。of =输出文件（或设备名称）。ibs = bytes 一次读取bytes字节，即读入缓冲区的字节数。skip = blocks 跳过读入缓冲区开头的ibs*blocks块。obs">
+<meta property="og:description" content="内存分配一：从全局存储区域分配：这时内存在程序编译阶段就已经分配好，该内存在程序运行的整个周期都有效，如：全局变量、static静态变量。 二：从栈区分配：在执行函数的时候，函数中的局部变量的存储单元都可以从栈中分配，函数执行结束后这些存储单元都会被自动释放，效率很高 但是分配的内存容量有限。 三：从堆中分配：也称为动态分配内存，在程序运行期间，可以使用malloc和new申请任意数量的内存单元，">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-25T01:56:54.000Z">
+<meta property="og:updated_time" content="2020-01-17T03:18:06.000Z">
 <meta name="twitter:card" content="summary">
 
 
@@ -117,13 +117,13 @@
 
 
 
-  <link rel="canonical" href="http://lovethegirl.github.io/2019/11/26/dd/"/>
+  <link rel="canonical" href="http://lovethegirl.github.io/2020/01/17/c++kn/"/>
 
 
 
 
 
-  <title>dd使用教程 | 李厅</title>
+  <title>c++基础 | 李厅</title>
   
 
 
@@ -250,7 +250,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://lovethegirl.github.io/2019/11/26/dd/">
+    <link itemprop="mainEntityOfPage" href="http://lovethegirl.github.io/2020/01/17/c++kn/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="David Lee">
@@ -267,7 +267,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">dd使用教程</h1>
+          <h1 class="post-title" itemprop="name headline">c++基础</h1>
         
 
         <div class="post-meta">
@@ -279,8 +279,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-26T19:30:48+08:00">
-                2019-11-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-17T11:24:24+08:00">
+                2020-01-17
               </time>
             
 
@@ -317,16 +317,42 @@
       
 
       
-        <p>dd是 Linux/UNIX 下的一个非常有用的命令，作用是用指定大小的块拷贝一个文件，并在拷贝的同时进行指定的转换。</p>
-<h2 id="dd的语法"><a href="#dd的语法" class="headerlink" title="dd的语法"></a>dd的语法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">if =输入文件（或设备名称）。</span><br><span class="line">of =输出文件（或设备名称）。</span><br><span class="line">ibs = bytes 一次读取bytes字节，即读入缓冲区的字节数。</span><br><span class="line">skip = blocks 跳过读入缓冲区开头的ibs*blocks块。</span><br><span class="line">obs = bytes 一次写入bytes字节，即写入缓冲区的字节数。</span><br><span class="line">bs = bytes 同时设置读/写缓冲区的字节数（等于设置ibs和obs）。</span><br><span class="line">cbs = byte 一次转换bytes字节。</span><br><span class="line">count=blocks 只拷贝输入的blocks块。</span><br><span class="line">conv = ASCII 把EBCDIC码转换为ASCIl码。</span><br><span class="line">conv = ebcdic 把ASCIl码转换为EBCDIC码。</span><br><span class="line">conv = ibm 把ASCIl码转换为alternate EBCDIC码。</span><br><span class="line">conv = block 把变动位转换成固定字符。</span><br><span class="line">conv = ublock 把固定位转换成变动位。</span><br><span class="line">conv = ucase 把字母由小写转换为大写。</span><br><span class="line">conv = lcase 把字母由大写转换为小写。</span><br><span class="line">conv = notrunc 不截短输出文件。</span><br><span class="line">conv = swab 交换每一对输入字节。</span><br><span class="line">conv = noerror 出错时不停止处理。</span><br><span class="line">conv = sync 把每个输入记录的大小都调到ibs的大小（用NUL填充）。</span><br></pre></td></tr></table></figure>
+        <h2 id="内存分配"><a href="#内存分配" class="headerlink" title="内存分配"></a>内存分配</h2><p>一：从全局存储区域分配：这时内存在程序编译阶段就已经分配好，该内存在程序运行的整个周期都有效，如：全局变量、static静态变量。</p>
+<p>二：从栈区分配：在执行函数的时候，函数中的局部变量的存储单元都可以从栈中分配，函数执行结束后这些存储单元都会被自动释放，效率很高 但是分配的内存容量有限。</p>
+<p>三：从堆中分配：也称为动态分配内存，在程序运行期间，可以使用malloc和new申请任意数量的内存单元，由程序员决定在什么时候使用free和delete释放内存。</p>
+<p>new和malloc的区别:</p>
+<ol>
+<li>属性不同</li>
+</ol>
+<p>new/delete是C++关键字，需要编译器支持。malloc/free是库函数，需要头文件stdlib.h支持。</p>
+<p>2.参数</p>
+<p>使用new操作符申请内存分配时无须指定内存块的大小，编译器会根据类型信息自行计算。而malloc则需要显式地指出所需内存的尺寸。</p>
+<p>3.分配失败</p>
+<p>new内存分配失败时，会抛出bac_alloc异常。malloc分配内存失败时返回NULL。</p>
+<p>4.返回类型</p>
+<p>new操作符内存分配成功时，返回的是对象类型的指针，类型严格与对象匹配，无须进行类型转换，故new是符合类型安全性的操作符。而malloc内存分配成功则是返回void * ，需要通过强制类型转换将void*指针转换成我们需要的类型。</p>
+<ol start="5">
+<li><p>自定义类型</p>
+<p>new会先调用operator new函数，申请足够的内存（通常底层使用malloc实现）。然后调用类型的构造函数，初始化成员变量，最后返回自定义类型指针。delete先调用析构函数，然后调用operator delete函数释放内存（通常底层使用free实现）。  malloc/free是库函数，只能动态的申请和释放内存，无法强制要求其做自定义类型对象构造和析构工作。</p>
+</li>
+<li><p>重载</p>
+</li>
+</ol>
+<p>C++允许重载new/delete操作符，特别的，布局new的就不需要为对象分配内存，而是指定了一个地址作为内存起始区域，new在这段内存上为对象调用构造函数完成初始化工作，并返回此地址。而malloc不允许重载。</p>
+<p>7.内存区域</p>
+<p>new操作符从自由存储区（free store）上为对象动态分配内存空间，而malloc函数从堆上动态分配内存。自由存储区是C++基于new操作符的一个抽象概念，凡是通过new操作符进行内存申请，该内存即为自由存储区。而堆是操作系统中的术语，是操作系统所维护的一块特殊内存，用于程序的内存动态分配，C语言使用malloc从堆上分配内存，使用free释放已分配的对应内存。自由存储区不等于堆，如上所述，布局new就可以不位于堆中。</p>
+<h2 id="全局变量和全局静态变量"><a href="#全局变量和全局静态变量" class="headerlink" title="全局变量和全局静态变量"></a>全局变量和全局静态变量</h2><p>static 声明的变量在C语言中有两方面的特征：<br>1.变量被放在程序的全局存储区中，这样在下一次调用的时候还可以保持原来的赋值。这一点是它与堆栈变量和堆变量的区别。<br>2.变量用static告知编译器，自己仅在变量的作用范围内可见。这一点是它与全局变量的区别。<br>Tips:<br>A.若全局变量仅在单个C文件中访问，则可以将这个变量修改为静态全局变量，以降低模块间的耦合度；<br>B.若全局变量仅由单个函数访问，则可以将这个变量改为该函数的静态局部变量，以降低模块间的耦合度；<br>C.设计和使用访问动态全局变量、静态全局变量、静态局部变量的函数时，需要考虑重入问题；<br>D.如果我们需要一个可重入的函数，那么，我们一定要避免函数中使用static变量(这样的函数被称为：带“内部存储器”功能的的函数)<br>E.函数中必须要使用static变量的情况:比如当某函数的返回值为指针类型时，则必须是static的局部变量的地址作为返回值，若为auto类型，则返回为错指针。</p>
+<p>函数前加static使得函数成为静态函数。但此处“static”的含义不是指存储方式，而是指对函数的作用域仅局限于本文件(所以又称内部函数)。使用内部函数的好处是：不同的人编写不同的函数时，不用担心自己定义的函数，是否会与其它文件中的函数同名。</p>
+<p>扩展分析:术语static有着不寻常的历史。起初，在C中引入关键字static是为了表示退出一个块后仍然存在的局部变量。随后，static在C中有了第二种含义：用来表示不能被其它文件访问的全局变量和函数。最后，C++重用了这个关键字，并赋予它与前面不同的第三种含义：表示属于一个类而不是属于此类的任何特定对象的变量和函数(与Java中此关键字的含义相同)。</p>
+<p>全局变量、静态全局变量、静态局部变量和局部变量的区别</p>
+<p>变量可以分为：全局变量、静态全局变量、静态局部变量和局部变量。</p>
+<p>按存储区域分，全局变量、静态全局变量和静态局部变量都存放在内存的静态存储区域，局部变量存放在内存的栈区。</p>
+<p>按作用域分，全局变量在整个工程文件内都有效；静态全局变量只在定义它的文件内有效；静态局部变量只在定义它的函数内有效，并且程序仅分配一次内存，函数返回后，该变量不会消失；局部变量在定义它的函数内有效，但是函数返回后失效。</p>
+<p>全局变量(外部变量)的说明之前再冠以static 就构成了静态的全局变量。全局变量本身就是静态存储方式， 静态全局变量当然也是静态存储方式。 这两者在存储方式上并无不同。这两者的区别在于非静态全局变量的作用域是整个源程序，当一个源程序由多个源文件组成时，非静态的全局变量在各个源文件中都是有效的。 而静态全局变量则限制了其作用域， 即只在定义该变量的源文件内有效， 在同一源程序的其它源文件中不能使用它。由于静态全局变量的作用域局限于一个源文件内，只能为该源文件内的函数公用， 因此可以避免在其它源文件中引起错误。<br>从以上分析可以看出，把局部变量改变为静态变量后是改变了它的存储方式即改变了它的生存期。把全局变量改变为静态变量后是改变了它的作用域，限制了它的使用范围。</p>
+<p>static函数与普通函数作用域不同，只在定义该变量的源文件内有效。只在当前源文件中使用的函数应该说明为内部函数(static)，内部函数应该在当前源文件中说明和定义。对于可在当前源文件以外使用的函数，应该在一个头文件中说明，要使用这些函数的源文件要包含这个头文件。</p>
+<p>static全局变量与普通的全局变量有什么区别：static全局变量只初使化一次，防止在其他文件单元中被引用;<br>static局部变量和普通局部变量有什么区别：static局部变量只被初始化一次，下一次依据上一次结果值；<br>static函数与普通函数有什么区别：static函数与普通函数作用域不同，只在定义该变量的源文件内有效；</p>
+<p>全局变量和静态变量如果没有手工初始化，则由编译器初始化为0。局部变量的值不可知。</p>
 
-<h2 id="使用实例"><a href="#使用实例" class="headerlink" title="使用实例"></a>使用实例</h2><h3 id="查看dd版本"><a href="#查看dd版本" class="headerlink" title="查看dd版本"></a>查看dd版本</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@ceph-node3 ~]# dd --version</span><br><span class="line">dd (coreutils) 8.22</span><br><span class="line">Copyright (C) 2013 Free Software Foundation, Inc.</span><br><span class="line">许可证：GPLv3+：GNU 通用公共许可证第3 版或更新版本&lt;http://gnu.org/licenses/gpl.html&gt;。</span><br><span class="line">本软件是自由软件：您可以自由修改和重新发布它。</span><br><span class="line">在法律范围内没有其他保证。</span><br><span class="line"></span><br><span class="line">由Paul Rubin、David MacKenzie 和Stuart Kemp 编写。</span><br></pre></td></tr></table></figure>
-
-<h3 id="把系统的一个文件cp成到另一个新文件"><a href="#把系统的一个文件cp成到另一个新文件" class="headerlink" title="把系统的一个文件cp成到另一个新文件"></a>把系统的一个文件cp成到另一个新文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@ceph-node3 ~]# ls</span><br><span class="line">anaconda-ks.cfg  ceph_path  initial-setup-ks.cfg  node-v11.0.0  node-v11.0.0.tar.gz  workspace  公共  模板  视频  图片  文档  下载  音乐  桌面</span><br><span class="line">[root@ceph-node3 ~]# dd if=/root/anaconda-ks.cfg of=/root/he.txt </span><br><span class="line">记录了3+1 的读入</span><br><span class="line">记录了3+1 的写出</span><br><span class="line">1693字节(1.7 kB)已复制，0.00023223 秒，7.3 MB/秒</span><br><span class="line">[root@ceph-node3 ~]# ls</span><br><span class="line">anaconda-ks.cfg  ceph_path  he.txt  initial-setup-ks.cfg  node-v11.0.0  node-v11.0.0.tar.gz  workspace  公共  模板  视频  图片  文档  下载  音乐  桌面</span><br></pre></td></tr></table></figure>
-
-<h3 id="创建一个100M的空文件"><a href="#创建一个100M的空文件" class="headerlink" title="创建一个100M的空文件"></a>创建一个100M的空文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@ceph-node3 ~]# dd if=/dev/zero of=he.txt bs=100M count=1</span><br><span class="line">记录了1+0 的读入</span><br><span class="line">记录了1+0 的写出</span><br><span class="line">104857600字节(105 MB)已复制，0.0949458 秒，1.1 GB/秒</span><br></pre></td></tr></table></figure>
-
-<h3 id="常用知识"><a href="#常用知识" class="headerlink" title="常用知识"></a>常用知识</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/dev/null，外号叫无底洞，你可以向它输出任何数据，它通吃，并且不会撑着！</span><br><span class="line">/dev/zero,是一个输入设备，你可你用它来初始化文件。</span><br><span class="line">/dev/null——它是空设备，也称为位桶（bit bucket）。任何写入它的输出都会被抛弃。如果不想让消息以标准输出显示或写入文件，那么可以将消息重定向到位桶。</span><br><span class="line">/dev/zero——该设备无穷尽地提供0，可以使用任何你需要的数目——设备提供的要多的多。他可以用于向设备或文件写入字符串0。</span><br></pre></td></tr></table></figure>
       
     </div>
     
@@ -350,8 +376,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/11/22/find/" rel="next" title="find使用教程">
-                <i class="fa fa-chevron-left"></i> find使用教程
+              <a href="/2020/01/12/Keeplived/" rel="next" title="Keepalived初识">
+                <i class="fa fa-chevron-left"></i> Keepalived初识
               </a>
             
           </div>
@@ -359,10 +385,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/11/27/test/" rel="prev" title="test">
-                test <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -476,7 +498,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#dd的语法"><span class="nav-number">1.</span> <span class="nav-text">dd的语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用实例"><span class="nav-number">2.</span> <span class="nav-text">使用实例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#查看dd版本"><span class="nav-number">2.1.</span> <span class="nav-text">查看dd版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#把系统的一个文件cp成到另一个新文件"><span class="nav-number">2.2.</span> <span class="nav-text">把系统的一个文件cp成到另一个新文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建一个100M的空文件"><span class="nav-number">2.3.</span> <span class="nav-text">创建一个100M的空文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用知识"><span class="nav-number">2.4.</span> <span class="nav-text">常用知识</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#内存分配"><span class="nav-number">1.</span> <span class="nav-text">内存分配</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#全局变量和全局静态变量"><span class="nav-number">2.</span> <span class="nav-text">全局变量和全局静态变量</span></a></li></ol></div>
             
 
           </div>
