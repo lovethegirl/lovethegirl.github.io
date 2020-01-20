@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="SSH的基本原理以及使用工具SSH(远程连接工具)连接原理：ssh服务是一个守护进程(demon)，系统后台监听客户端的连接，ssh服务端的进程名为sshd,负责实时监听客户端的请求(IP 22端口)，包括公共秘钥等交换等信息。 SSH服务端由2部分组成： openssh(提供ssh服务)    openssl(提供加密的程序) SSH的客户端可以用 XSHELL，Securecrt, Mobax">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SSH介绍以及免密配置">
+<meta property="og:url" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2020&#x2F;01&#x2F;20&#x2F;ssh&#x2F;index.html">
+<meta property="og:site_name" content="李厅">
+<meta property="og:description" content="SSH的基本原理以及使用工具SSH(远程连接工具)连接原理：ssh服务是一个守护进程(demon)，系统后台监听客户端的连接，ssh服务端的进程名为sshd,负责实时监听客户端的请求(IP 22端口)，包括公共秘钥等交换等信息。 SSH服务端由2部分组成： openssh(提供ssh服务)    openssl(提供加密的程序) SSH的客户端可以用 XSHELL，Securecrt, Mobax">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-18T15:09:39.000Z">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lovethegirl.github.io/2020/01/20/ssh/"/>
+
+
+
+
+
+  <title>SSH介绍以及免密配置 | 李厅</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">李厅</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://lovethegirl.github.io/2020/01/20/ssh/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="David Lee">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="李厅">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SSH介绍以及免密配置</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-20T13:07:29+08:00">
+                2020-01-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="SSH的基本原理以及使用工具"><a href="#SSH的基本原理以及使用工具" class="headerlink" title="SSH的基本原理以及使用工具"></a>SSH的基本原理以及使用工具</h2><p>SSH(远程连接工具)连接原理：ssh服务是一个守护进程(demon)，系统后台监听客户端的连接，ssh服务端的进程名为sshd,负责实时监听客户端的请求(IP 22端口)，包括公共秘钥等交换等信息。</p>
+<pre><code>SSH服务端由2部分组成： openssh(提供ssh服务)    openssl(提供加密的程序)
+SSH的客户端可以用 XSHELL，Securecrt, Mobaxterm等工具进行连接</code></pre><h2 id="SSH的工作机制"><a href="#SSH的工作机制" class="headerlink" title="SSH的工作机制"></a>SSH的工作机制</h2><pre><code>服务器启动的时候自己产生一个密钥(768bit公钥)，本地的ssh客户端发送连接请求到ssh服务器，服务器检查连接点客户端发送的数据和IP地址，确认合法后发送密钥(768bits)给客户端，此时客户端将本地私钥(256bit)和服务器的公钥(768bit)结合成密钥对key(1024bit),发回给服务器端，建立连接通过key-pair数据传输。      </code></pre><h2 id="SSH的加密技术"><a href="#SSH的加密技术" class="headerlink" title="SSH的加密技术"></a>SSH的加密技术</h2><pre><code>加密技术：传输过程，数据加密。            
+1.SSH1没有对客户端的秘钥进行校验，很容易被植入恶意代码
+2.SSH2增加了一个确认联机正确性的Diffe_Hellman机制，每次数据的传输，Server都会检查数据来源的正确性，避免黑客入侵。                    
+SSH2支持RSA和DSA密钥   
+DSA:digital signature Algorithm  数字签名
+RSA:既可以数字签名又可以加密      </code></pre><h2 id="SSH知识小结"><a href="#SSH知识小结" class="headerlink" title="SSH知识小结"></a>SSH知识小结</h2><p>  1.SSH是安全的加密协议，用于远程连接Linux服务器<br>  2.SSH的默认端口是22，安全协议版本是SSH2<br>  3.SSH服务器端主要包含2个服务功能SSH连接和SFTP服务器<br>  4.SSH客户端包含ssh连接命令和远程拷贝scp命令等</p>
+<h2 id="基本指令使用"><a href="#基本指令使用" class="headerlink" title="基本指令使用"></a>基本指令使用</h2><p>1.登录<br>     ssh -p22 <a href="mailto:omd@192.168.25.137" target="_blank" rel="noopener">omd@192.168.25.137</a><br>2.直接执行命令  –&gt;最好全路径<br>      ssh <a href="mailto:root@192.168.25.137" target="_blank" rel="noopener">root@192.168.25.137</a> ls -ltr /backup/data<br>          ==&gt;ssh <a href="mailto:root@192.168.25.137" target="_blank" rel="noopener">root@192.168.25.137</a> /bin/ls -ltr /backup/data<br>3.查看已知主机<br>       cat /root/.ssh/known_hosts<br>4.ssh远程执行sudo命令<br>      ssh -t <a href="mailto:omd@192.168.25.137" target="_blank" rel="noopener">omd@192.168.25.137</a> sudo rsync hosts /etc/<br>5.scp<br>   1.功能   –&gt;远程文件的安全(加密)拷贝<br>  scp -P22 -r -p /home/omd/h.txt <a href="mailto:omd@192.168.25.137" target="_blank" rel="noopener">omd@192.168.25.137</a>:/home/omd/<br>  2.scp知识小结</p>
+<h2 id="免密配置流程"><a href="#免密配置流程" class="headerlink" title="免密配置流程"></a>免密配置流程</h2><h3 id="vim-etc-hosts"><a href="#vim-etc-hosts" class="headerlink" title="vim /etc/hosts"></a>vim /etc/hosts</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">10.0.15.10        ceph-admin</span><br><span class="line">10.0.15.11        mon1</span><br><span class="line">10.0.15.21        osd1</span><br><span class="line">10.0.15.22        osd2</span><br><span class="line">10.0.15.23        osd3</span><br><span class="line">10.0.15.15        client</span><br></pre></td></tr></table></figure>
+<h3 id="ssh-keygen"><a href="#ssh-keygen" class="headerlink" title="ssh-keygen"></a>ssh-keygen</h3><p>   leave passphrase blank/empty.</p>
+<h3 id="vim-ssh-config"><a href="#vim-ssh-config" class="headerlink" title="vim ~/.ssh/config"></a>vim ~/.ssh/config</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">Host ceph-admin</span><br><span class="line">        Hostname ceph-admin</span><br><span class="line">        User cephuser</span><br><span class="line"> </span><br><span class="line">Host mon1</span><br><span class="line">        Hostname mon1</span><br><span class="line">        User cephuser</span><br><span class="line"> </span><br><span class="line">Host osd1</span><br><span class="line">        Hostname osd1</span><br><span class="line">        User cephuser</span><br><span class="line"> </span><br><span class="line">Host osd2</span><br><span class="line">        Hostname osd2</span><br><span class="line">        User cephuser</span><br><span class="line"> </span><br><span class="line">Host osd3</span><br><span class="line">        Hostname osd3</span><br><span class="line">        User cephuser</span><br><span class="line"> </span><br><span class="line">Host client</span><br><span class="line">        Hostname client</span><br><span class="line">        User cephuser</span><br></pre></td></tr></table></figure>
+
+<h3 id="chmod-644-ssh-config"><a href="#chmod-644-ssh-config" class="headerlink" title="chmod 644 ~/.ssh/config"></a>chmod 644 ~/.ssh/config</h3><h3 id="ssh-keyscan-osd1-osd2-osd3-mon1-client-gt-gt-ssh-known-hosts"><a href="#ssh-keyscan-osd1-osd2-osd3-mon1-client-gt-gt-ssh-known-hosts" class="headerlink" title="ssh-keyscan osd1 osd2 osd3 mon1 client &gt;&gt; ~/.ssh/known_hosts"></a>ssh-keyscan osd1 osd2 osd3 mon1 client &gt;&gt; ~/.ssh/known_hosts</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ssh-copy-id osd1</span><br><span class="line">ssh-copy-id osd2</span><br><span class="line">ssh-copy-id osd3</span><br><span class="line">ssh-copy-id mon1</span><br><span class="line">ssh-copy-id client</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/17/c++kn/" rel="next" title="c++基础">
+                <i class="fa fa-chevron-left"></i> c++基础
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">David Lee</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SSH的基本原理以及使用工具"><span class="nav-number">1.</span> <span class="nav-text">SSH的基本原理以及使用工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSH的工作机制"><span class="nav-number">2.</span> <span class="nav-text">SSH的工作机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSH的加密技术"><span class="nav-number">3.</span> <span class="nav-text">SSH的加密技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSH知识小结"><span class="nav-number">4.</span> <span class="nav-text">SSH知识小结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本指令使用"><span class="nav-number">5.</span> <span class="nav-text">基本指令使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#免密配置流程"><span class="nav-number">6.</span> <span class="nav-text">免密配置流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#vim-etc-hosts"><span class="nav-number">6.1.</span> <span class="nav-text">vim /etc/hosts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ssh-keygen"><span class="nav-number">6.2.</span> <span class="nav-text">ssh-keygen</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vim-ssh-config"><span class="nav-number">6.3.</span> <span class="nav-text">vim ~/.ssh/config</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chmod-644-ssh-config"><span class="nav-number">6.4.</span> <span class="nav-text">chmod 644 ~/.ssh/config</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ssh-keyscan-osd1-osd2-osd3-mon1-client-gt-gt-ssh-known-hosts"><span class="nav-number">6.5.</span> <span class="nav-text">ssh-keyscan osd1 osd2 osd3 mon1 client &gt;&gt; ~/.ssh/known_hosts</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">David Lee</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
