@@ -79,14 +79,14 @@
 
 
 
-<meta name="description" content="磁盘的IO磁盘的 I&#x2F;O，顾名思义就是磁盘的输入输出。输入指的是对磁盘写入数据，输出指的是从磁盘读出数据。我们常见的磁盘类型有 ATA、SATA、FC、SCSI、SAS，如图1所示。这几种磁盘中，服务器常用的是 SAS 和 FC 磁盘，一些高端存储也使用 SSD 盘。每一种磁盘的性能是不一样的。 性能指标IOPS和吞吐量SAN（Storage Area Network, 存储区域网络）和NAS存储">
+<meta name="description" content="1234[root@172e18e211e34 ~]# vmstat 5 5procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu----- r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st 1">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iops介绍">
-<meta property="og:url" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2020&#x2F;01&#x2F;03&#x2F;iops&#x2F;index.html">
+<meta property="og:title" content="vmstat使用教程">
+<meta property="og:url" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2020&#x2F;02&#x2F;01&#x2F;vmstat&#x2F;index.html">
 <meta property="og:site_name" content="李厅">
-<meta property="og:description" content="磁盘的IO磁盘的 I&#x2F;O，顾名思义就是磁盘的输入输出。输入指的是对磁盘写入数据，输出指的是从磁盘读出数据。我们常见的磁盘类型有 ATA、SATA、FC、SCSI、SAS，如图1所示。这几种磁盘中，服务器常用的是 SAS 和 FC 磁盘，一些高端存储也使用 SSD 盘。每一种磁盘的性能是不一样的。 性能指标IOPS和吞吐量SAN（Storage Area Network, 存储区域网络）和NAS存储">
+<meta property="og:description" content="1234[root@172e18e211e34 ~]# vmstat 5 5procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu----- r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st 1">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-12-18T11:55:45.000Z">
+<meta property="og:updated_time" content="2020-02-01T07:32:49.000Z">
 <meta name="twitter:card" content="summary">
 
 
@@ -117,13 +117,13 @@
 
 
 
-  <link rel="canonical" href="http://lovethegirl.github.io/2020/01/03/iops/"/>
+  <link rel="canonical" href="http://lovethegirl.github.io/2020/02/01/vmstat/"/>
 
 
 
 
 
-  <title>iops介绍 | 李厅</title>
+  <title>vmstat使用教程 | 李厅</title>
   
 
 
@@ -250,7 +250,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://lovethegirl.github.io/2020/01/03/iops/">
+    <link itemprop="mainEntityOfPage" href="http://lovethegirl.github.io/2020/02/01/vmstat/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="David Lee">
@@ -267,7 +267,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">iops介绍</h1>
+          <h1 class="post-title" itemprop="name headline">vmstat使用教程</h1>
         
 
         <div class="post-meta">
@@ -279,8 +279,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-03T21:11:14+08:00">
-                2020-01-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-01T20:07:18+08:00">
+                2020-02-01
               </time>
             
 
@@ -317,12 +317,35 @@
       
 
       
-        <h2 id="磁盘的IO"><a href="#磁盘的IO" class="headerlink" title="磁盘的IO"></a>磁盘的IO</h2><p>磁盘的 I/O，顾名思义就是磁盘的输入输出。输入指的是对磁盘写入数据，输出指的是从磁盘读出数据。我们常见的磁盘类型有 ATA、SATA、FC、SCSI、SAS，如图1所示。这几种磁盘中，服务器常用的是 SAS 和 FC 磁盘，一些高端存储也使用 SSD 盘。每一种磁盘的性能是不一样的。</p>
-<h2 id="性能指标IOPS和吞吐量"><a href="#性能指标IOPS和吞吐量" class="headerlink" title="性能指标IOPS和吞吐量"></a>性能指标IOPS和吞吐量</h2><p>SAN（Storage Area Network, 存储区域网络）和NAS存储（Network Attached Storage，网络附加存储)一般都具备2个评价指标：IOPS和带宽（throughput），两个指标互相独立又相互关联。体现存储系统性能的最主要指标是IOPS。下面，将介绍一下这两个参数的含义。<br>IOPS (Input/Output Per Second)即每秒的输入输出量(或读写次数)，是衡量磁盘性能的主要指标之一。IOPS是指单位时间内系统能处理的I/O请求数量，I/O请求通常为读或写数据操作请求。随机读写频繁的应用，如OLTP(Online Transaction Processing)，IOPS是关键衡量指标。另一个重要指标是数据吞吐量(Throughput)，指单位时间内可以成功传输的数据数量。对于大量顺序读写的应用，如VOD(Video On Demand)，则更关注吞吐量指标。</p>
-<p>简而言之：<br>磁盘的 IOPS，也就是在一秒内，磁盘进行多少次 I/O 读写。<br>磁盘的吞吐量，也就是每秒磁盘 I/O 的流量，即磁盘写入加上读出的数据的大小。</p>
-<h2 id="IO性能监控工具"><a href="#IO性能监控工具" class="headerlink" title="IO性能监控工具"></a>IO性能监控工具</h2><p>topas</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">```</span><br><span class="line"></span><br><span class="line">nmon</span><br></pre></td></tr></table></figure>
-<p>skName Busy  Read WriteKB|0          |25         |50          |75       100|                                               x<br>xsda        0%    0.0    0.0|&gt;                                                |                                               x<br>xsda1       0%    0.0    0.0|&gt;                                                |                                               x<br>xsda2       0%    0.0    0.0|&gt;                                                |                                               x<br>xsdc        0%    0.0    0.0|&gt;                                                |                                               x<br>xsr0        0%    0.0    0.0|&gt;                                                |                                               x<br>xsdb        0%    0.0    0.0|&gt;                                                |                                               x<br>xdm-0       0%    0.0    0.0|&gt;                                                |                                               x<br>xdm-1       0%    0.0    0.0|&gt;                                                |                                               x<br>xTotals Read-MB/s=0.0      Writes-MB/s=0.0      Transfers/sec=0.0                                                             x<br>```</p>
+        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@172e18e211e34 ~]# vmstat 5 5</span><br><span class="line">procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----</span><br><span class="line"> r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st</span><br><span class="line"> 1  0      0 31827948   1808 95980448    0    0     0    57    0    0  2  0 98  0  0</span><br></pre></td></tr></table></figure>
+<h3 id="字段说明："><a href="#字段说明：" class="headerlink" title="字段说明："></a>字段说明：</h3><p>Procs（进程）：</p>
+<p>  r: 运行队列中进程数量</p>
+<p>  b： 等待IO的进程数量</p>
+<p>Memory（内存）：</p>
+<p>  swpd: 使用虚拟内存大小</p>
+<p>  free: 可用内存大小</p>
+<p>  buff: 用作缓冲的内存大小</p>
+<p>  cache: 用作缓存的内存大小</p>
+<p>Swap：</p>
+<p>  si: 每秒从交换区写到内存的大小</p>
+<p>  so: 每秒写入交换区的内存大小</p>
+<p>IO：（现在的Linux版本块的大小为1024bytes）</p>
+<p>  bi: 每秒读取的块数</p>
+<p>  bo: 每秒写入的块数</p>
+<p>系统：</p>
+<p>in: 每秒中断数，包括时钟中断。【interrupt】</p>
+<p>cs: 每秒上下文切换数。        【count/second】</p>
+<p>CPU（以百分比表示）：</p>
+<p>  us: 用户进程执行时间(user time)</p>
+<p>  sy: 系统进程执行时间(system time)</p>
+<p>  id: 空闲时间(包括IO等待时间),中央处理器的空闲时间 。以百分比表示。</p>
+<p>  wa: 等待IO时间</p>
+<p>备注：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">如果r经常大于4，id经常少于40，表示cpu的负荷很重。</span><br><span class="line"></span><br><span class="line">如果bi，bo长期不等于0，表示内存不足。</span><br><span class="line"></span><br><span class="line">如果disk经常不等于0，且在b中的队列大于3，表示io性能不好。</span><br><span class="line"></span><br><span class="line">Linux在具有高稳定性、可靠性的同时，具有很好的可伸缩性和扩展性，能够针对不同的应用和硬件环境调整，优化出满足当前应用需要的最佳性能。因此企业在维护Linux系统、进行系统调优时，了解系统性能分析工具是至关重要的。</span><br></pre></td></tr></table></figure>
+<h3 id="显示活跃和非活跃内存"><a href="#显示活跃和非活跃内存" class="headerlink" title="显示活跃和非活跃内存"></a>显示活跃和非活跃内存</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@172e18e211e34 ~]# vmstat -a</span><br><span class="line">procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----</span><br><span class="line"> r  b   swpd   free  inact active   si   so    bi    bo   in   cs us sy id wa st</span><br><span class="line"> 2  0      0 31828064 13347320 83024208    0    0     0    57    0    0  2  0 98  0  0</span><br></pre></td></tr></table></figure>
+
+<h3 id="显示从系统启动至今的fork数量"><a href="#显示从系统启动至今的fork数量" class="headerlink" title="显示从系统启动至今的fork数量"></a>显示从系统启动至今的fork数量</h3><p>vmstat -f 【 linux下创建进程的系统调用是fork】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@172e18e211e34 ~]# vmstat -f</span><br><span class="line">    179425896 forks</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -347,8 +370,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/01/03/pool/" rel="next" title="ceph pool池的相关操作">
-                <i class="fa fa-chevron-left"></i> ceph pool池的相关操作
+              <a href="/2020/01/20/ssh/" rel="next" title="SSH介绍以及免密配置">
+                <i class="fa fa-chevron-left"></i> SSH介绍以及免密配置
               </a>
             
           </div>
@@ -357,8 +380,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2020/01/12/Keeplived/" rel="prev" title="Keepalived初识">
-                Keepalived初识 <i class="fa fa-chevron-right"></i>
+              <a href="/2020/02/01/cahce/" rel="prev" title="cache的基本介绍">
+                cache的基本介绍 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -473,7 +496,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#磁盘的IO"><span class="nav-number">1.</span> <span class="nav-text">磁盘的IO</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#性能指标IOPS和吞吐量"><span class="nav-number">2.</span> <span class="nav-text">性能指标IOPS和吞吐量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IO性能监控工具"><span class="nav-number">3.</span> <span class="nav-text">IO性能监控工具</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#字段说明："><span class="nav-number">1.</span> <span class="nav-text">字段说明：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#显示活跃和非活跃内存"><span class="nav-number">2.</span> <span class="nav-text">显示活跃和非活跃内存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#显示从系统启动至今的fork数量"><span class="nav-number">3.</span> <span class="nav-text">显示从系统启动至今的fork数量</span></a></li></ol></div>
             
 
           </div>
