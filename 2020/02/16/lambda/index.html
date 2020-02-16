@@ -79,12 +79,14 @@
 
 
 
+<meta name="description" content="C++lambda表达式匿名函数C++在C11标准中引入了匿名函数,即没有名字的临时函数,又称之为lambda表达式.lambda表达式 实质上是创建一个匿名函数&#x2F;对象 基本格式caputrueopt-&amp;gt;ret{body;}; [函数对象参数] (操作符重载函数参数) mutable 或 exception 声明 -&amp;gt; 返回值类型 {函数体} 比如说 {cout &amp;lt;&amp;lt; “h">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ceph_qos">
-<meta property="og:url" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2019&#x2F;12&#x2F;18&#x2F;ceph-qos&#x2F;index.html">
+<meta property="og:title" content="lambda函数">
+<meta property="og:url" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2020&#x2F;02&#x2F;16&#x2F;lambda&#x2F;index.html">
 <meta property="og:site_name" content="李厅">
+<meta property="og:description" content="C++lambda表达式匿名函数C++在C11标准中引入了匿名函数,即没有名字的临时函数,又称之为lambda表达式.lambda表达式 实质上是创建一个匿名函数&#x2F;对象 基本格式caputrueopt-&amp;gt;ret{body;}; [函数对象参数] (操作符重载函数参数) mutable 或 exception 声明 -&amp;gt; 返回值类型 {函数体} 比如说 {cout &amp;lt;&amp;lt; “h">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-12-18T06:14:00.120Z">
+<meta property="og:updated_time" content="2020-02-16T15:31:13.000Z">
 <meta name="twitter:card" content="summary">
 
 
@@ -115,13 +117,13 @@
 
 
 
-  <link rel="canonical" href="http://lovethegirl.github.io/2019/12/18/ceph-qos/"/>
+  <link rel="canonical" href="http://lovethegirl.github.io/2020/02/16/lambda/"/>
 
 
 
 
 
-  <title>ceph_qos | 李厅</title>
+  <title>lambda函数 | 李厅</title>
   
 
 
@@ -248,7 +250,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://lovethegirl.github.io/2019/12/18/ceph-qos/">
+    <link itemprop="mainEntityOfPage" href="http://lovethegirl.github.io/2020/02/16/lambda/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="David Lee">
@@ -265,7 +267,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">ceph_qos</h1>
+          <h1 class="post-title" itemprop="name headline">lambda函数</h1>
         
 
         <div class="post-meta">
@@ -277,8 +279,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-18T14:14:00+08:00">
-                2019-12-18
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-16T23:48:58+08:00">
+                2020-02-16
               </time>
             
 
@@ -315,7 +317,20 @@
       
 
       
-        
+        <h2 id="C-lambda表达式"><a href="#C-lambda表达式" class="headerlink" title="C++lambda表达式"></a>C++lambda表达式</h2><h3 id="匿名函数"><a href="#匿名函数" class="headerlink" title="匿名函数"></a>匿名函数</h3><p>C++在C11标准中引入了匿名函数,即没有名字的临时函数,又称之为lambda表达式.lambda表达式 实质上是创建一个匿名函数/对象</p>
+<h3 id="基本格式"><a href="#基本格式" class="headerlink" title="基本格式"></a>基本格式</h3><p><a href="params">caputrue</a>opt-&gt;ret{body;};</p>
+<p>[函数对象参数] (操作符重载函数参数) mutable 或 exception 声明 -&gt; 返回值类型 {函数体}</p>
+<p>比如说<a href></a> {cout &lt;&lt; “hello” &lt;&lt; endl; };<br>对于匿名函数,一般用于传函数参数,当然也可以直接定义调用.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">auto pfun=[]()&#123;cout&lt;&lt;&quot;hello world&quot;&lt;&lt;endl;&#125;		//这里使用auto自动判断类型  其实是函数指针</span><br><span class="line">pfun();						//调用这个函数</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="各个部分说明"><a href="#各个部分说明" class="headerlink" title="各个部分说明"></a>各个部分说明</h3><h4 id="函数对象参数-不可省略"><a href="#函数对象参数-不可省略" class="headerlink" title="函数对象参数(不可省略)"></a>函数对象参数(不可省略)</h4><p>[]    不截取任何变量<br>[&amp;]    截取外部作用域中所有变量，并作为引用在函数体中使用<br>[=]    截取外部作用域中所有变量，并拷贝一份在函数体中使用<br>[=, &amp;foo] 截取外部作用域中所有变量，并拷贝一份在函数体中使用，但是对foo变量使用引用<br>[bar]    截取bar变量并且拷贝一份在函数体重使用，同时不截取其他变量<br>[this] 截取当前类中的this指针。如果已经使用了&amp;或者=就默认添加此选项。</p>
+<h4 id="重载参数列表"><a href="#重载参数列表" class="headerlink" title="重载参数列表"></a>重载参数列表</h4><p>调用的时候需要传递的参数</p>
+<h4 id="返回类型-可以自动推导-可以省略"><a href="#返回类型-可以自动推导-可以省略" class="headerlink" title="返回类型(可以自动推导 可以省略)"></a>返回类型(可以自动推导 可以省略)</h4><p>auto fun = [](int x, int y)-&gt;int {cout &lt;&lt; x + y &lt;&lt; endl; return y;};<br>对于这里的-&gt;int 这个int就是返回值类型,如果有返回值类型需要在前面加上-&gt;<br>直接省略写成这种格式也可以[](int x,int y){cout&lt;&lt;x+y&lt;&lt;endl;return y;}</p>
+<h4 id="函数体"><a href="#函数体" class="headerlink" title="函数体"></a>函数体</h4><p>lambda表达式的函数体中可以和普通函数一样写,可以使用捕获的参数,写这个函数实现的具体步骤.</p>
+<h4 id="函数选项opt-可以省略"><a href="#函数选项opt-可以省略" class="headerlink" title="函数选项opt    (可以省略)"></a>函数选项opt    (可以省略)</h4><p>可以填mutable,exception,attribute<br>mutable 表示函数体可以修改捕获变量的,同时可以访问捕获对象的非常属性成员函数<br>exception说明lambda表达式是否抛出异常以及何种异常<br>attribute用来声明属性</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;iostream&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">	auto ptr = []() &#123;cout &lt;&lt; &quot;hello&quot; &lt;&lt; endl; &#125;;	//lambda表达式</span><br><span class="line">	ptr();//调用函数</span><br><span class="line"></span><br><span class="line">	auto fun = [](int x, int y)-&gt;int &#123;cout &lt;&lt; x + y &lt;&lt; endl; return y;&#125;;	//带参数的lambda表达式</span><br><span class="line">	//  这里的-&gt;后面写的是返回值类型</span><br><span class="line">	auto z=fun(3, 4);</span><br><span class="line">	cout &lt;&lt; z &lt;&lt; endl;</span><br><span class="line">	</span><br><span class="line">	cin.get();</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
       
     </div>
     
@@ -339,8 +354,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/12/08/linux%E5%91%BD%E4%BB%A42/" rel="next" title="linux目前常用的命令总结2">
-                <i class="fa fa-chevron-left"></i> linux目前常用的命令总结2
+              <a href="/2020/02/11/compression/" rel="next" title="bluestore压缩设置">
+                <i class="fa fa-chevron-left"></i> bluestore压缩设置
               </a>
             
           </div>
@@ -349,8 +364,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/12/18/CPU%E5%A4%84%E7%90%86%E5%99%A8%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" rel="prev" title="CPU基础知识介绍">
-                CPU基础知识介绍 <i class="fa fa-chevron-right"></i>
+              <a href="/2020/02/16/queue/" rel="prev" title="优先队列(priority queue)">
+                优先队列(priority queue) <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -403,8 +418,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -446,6 +470,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#C-lambda表达式"><span class="nav-number">1.</span> <span class="nav-text">C++lambda表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#匿名函数"><span class="nav-number">1.1.</span> <span class="nav-text">匿名函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本格式"><span class="nav-number">1.2.</span> <span class="nav-text">基本格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#各个部分说明"><span class="nav-number">1.3.</span> <span class="nav-text">各个部分说明</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#函数对象参数-不可省略"><span class="nav-number">1.3.1.</span> <span class="nav-text">函数对象参数(不可省略)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#重载参数列表"><span class="nav-number">1.3.2.</span> <span class="nav-text">重载参数列表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#返回类型-可以自动推导-可以省略"><span class="nav-number">1.3.3.</span> <span class="nav-text">返回类型(可以自动推导 可以省略)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#函数体"><span class="nav-number">1.3.4.</span> <span class="nav-text">函数体</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#函数选项opt-可以省略"><span class="nav-number">1.3.5.</span> <span class="nav-text">函数选项opt    (可以省略)</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
