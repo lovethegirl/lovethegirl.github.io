@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="C++lambda表达式匿名函数C++在C11标准中引入了匿名函数,即没有名字的临时函数,又称之为lambda表达式.lambda表达式 实质上是创建一个匿名函数&#x2F;对象 基本格式caputrueopt-&amp;gt;ret{body;}; [函数对象参数] (操作符重载函数参数) mutable 或 exception 声明 -&amp;gt; 返回值类型 {函数体} 比如说 {cout &amp;lt;&amp;lt; “h">
+<meta property="og:type" content="article">
+<meta property="og:title" content="c++11的一些特性">
+<meta property="og:url" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2020&#x2F;02&#x2F;23&#x2F;c++11&#x2F;index.html">
+<meta property="og:site_name" content="李厅">
+<meta property="og:description" content="C++lambda表达式匿名函数C++在C11标准中引入了匿名函数,即没有名字的临时函数,又称之为lambda表达式.lambda表达式 实质上是创建一个匿名函数&#x2F;对象 基本格式caputrueopt-&amp;gt;ret{body;}; [函数对象参数] (操作符重载函数参数) mutable 或 exception 声明 -&amp;gt; 返回值类型 {函数体} 比如说 {cout &amp;lt;&amp;lt; “h">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-02-21T06:13:23.000Z">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lovethegirl.github.io/2020/02/23/c++11/"/>
+
+
+
+
+
+  <title>c++11的一些特性 | 李厅</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">李厅</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://lovethegirl.github.io/2020/02/23/c++11/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="David Lee">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="李厅">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">c++11的一些特性</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-23T22:40:41+08:00">
+                2020-02-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="C-lambda表达式"><a href="#C-lambda表达式" class="headerlink" title="C++lambda表达式"></a>C++lambda表达式</h2><h3 id="匿名函数"><a href="#匿名函数" class="headerlink" title="匿名函数"></a>匿名函数</h3><p>C++在C11标准中引入了匿名函数,即没有名字的临时函数,又称之为lambda表达式.lambda表达式 实质上是创建一个匿名函数/对象</p>
+<h3 id="基本格式"><a href="#基本格式" class="headerlink" title="基本格式"></a>基本格式</h3><p><a href="params">caputrue</a>opt-&gt;ret{body;};</p>
+<p>[函数对象参数] (操作符重载函数参数) mutable 或 exception 声明 -&gt; 返回值类型 {函数体}</p>
+<p>比如说<a href></a> {cout &lt;&lt; “hello” &lt;&lt; endl; };<br>对于匿名函数,一般用于传函数参数,当然也可以直接定义调用.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">auto pfun=[]()&#123;cout&lt;&lt;&quot;hello world&quot;&lt;&lt;endl;&#125;		//这里使用auto自动判断类型  其实是函数指针</span><br><span class="line">pfun();						//调用这个函数</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="各个部分说明"><a href="#各个部分说明" class="headerlink" title="各个部分说明"></a>各个部分说明</h3><h4 id="函数对象参数-不可省略"><a href="#函数对象参数-不可省略" class="headerlink" title="函数对象参数(不可省略)"></a>函数对象参数(不可省略)</h4><p>[]    不截取任何变量<br>[&amp;]    截取外部作用域中所有变量，并作为引用在函数体中使用<br>[=]    截取外部作用域中所有变量，并拷贝一份在函数体中使用<br>[=, &amp;foo] 截取外部作用域中所有变量，并拷贝一份在函数体中使用，但是对foo变量使用引用<br>[bar]    截取bar变量并且拷贝一份在函数体重使用，同时不截取其他变量<br>[this] 截取当前类中的this指针。如果已经使用了&amp;或者=就默认添加此选项。</p>
+<h4 id="重载参数列表"><a href="#重载参数列表" class="headerlink" title="重载参数列表"></a>重载参数列表</h4><p>调用的时候需要传递的参数</p>
+<h4 id="返回类型-可以自动推导-可以省略"><a href="#返回类型-可以自动推导-可以省略" class="headerlink" title="返回类型(可以自动推导 可以省略)"></a>返回类型(可以自动推导 可以省略)</h4><p>auto fun = [](int x, int y)-&gt;int {cout &lt;&lt; x + y &lt;&lt; endl; return y;};<br>对于这里的-&gt;int 这个int就是返回值类型,如果有返回值类型需要在前面加上-&gt;<br>直接省略写成这种格式也可以[](int x,int y){cout&lt;&lt;x+y&lt;&lt;endl;return y;}</p>
+<h4 id="函数体"><a href="#函数体" class="headerlink" title="函数体"></a>函数体</h4><p>lambda表达式的函数体中可以和普通函数一样写,可以使用捕获的参数,写这个函数实现的具体步骤.</p>
+<h4 id="函数选项opt-可以省略"><a href="#函数选项opt-可以省略" class="headerlink" title="函数选项opt    (可以省略)"></a>函数选项opt    (可以省略)</h4><p>可以填mutable,exception,attribute<br>mutable 表示函数体可以修改捕获变量的,同时可以访问捕获对象的非常属性成员函数<br>exception说明lambda表达式是否抛出异常以及何种异常<br>attribute用来声明属性</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;iostream&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">	auto ptr = []() &#123;cout &lt;&lt; &quot;hello&quot; &lt;&lt; endl; &#125;;	//lambda表达式</span><br><span class="line">	ptr();//调用函数</span><br><span class="line"></span><br><span class="line">	auto fun = [](int x, int y)-&gt;int &#123;cout &lt;&lt; x + y &lt;&lt; endl; return y;&#125;;	//带参数的lambda表达式</span><br><span class="line">	//  这里的-&gt;后面写的是返回值类型</span><br><span class="line">	auto z=fun(3, 4);</span><br><span class="line">	cout &lt;&lt; z &lt;&lt; endl;</span><br><span class="line">	</span><br><span class="line">	cin.get();</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="mutable关键字"><a href="#mutable关键字" class="headerlink" title="mutable关键字"></a>mutable关键字</h2><p>在C++中，mutable也是为了突破const的限制而设置的。被mutable修饰的变量，将永远处于可变的状态，即使在一个const函数中。<br>我们知道，如果类的成员函数不会改变对象的状态，那么这个成员函数一般会声明成const的。</p>
+<p>下面是一个小例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">class ClxTest</span><br><span class="line">&#123;</span><br><span class="line">　public:</span><br><span class="line">　　void Output() const;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line">void ClxTest::Output() const</span><br><span class="line">&#123;</span><br><span class="line">　cout &lt;&lt; &quot;Output for test!&quot; &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">void OutputTest(const ClxTest&amp; lx)</span><br><span class="line">&#123;</span><br><span class="line">　lx.Output();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>类ClxTest的成员函数Output是用来输出的，不会修改类的状态，所以被声明为const的。<br>函数OutputTest也是用来输出的，里面调用了对象lx的Output输出方法，为了防止在函数中调用其他成员函数修改任何成员变量，所以参数也被const修饰。</p>
+<p>但是，有些时候，我们需要在const的函数里面修改一些跟类状态无关的数据成员，那么这个数据成员就应该被mutalbe来修饰。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">class ClxTest</span><br><span class="line">&#123;</span><br><span class="line">　public:</span><br><span class="line">　　ClxTest();</span><br><span class="line">　　~ClxTest();</span><br><span class="line"> </span><br><span class="line">　　void Output() const;</span><br><span class="line">　　int GetOutputTimes() const;</span><br><span class="line"> </span><br><span class="line">　private:</span><br><span class="line">　　mutable int m_iTimes;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line">ClxTest::ClxTest()</span><br><span class="line">&#123;</span><br><span class="line">　m_iTimes = 0;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">ClxTest::~ClxTest()</span><br><span class="line">&#123;&#125;</span><br><span class="line"> </span><br><span class="line">void ClxTest::Output() const</span><br><span class="line">&#123;</span><br><span class="line">　cout &lt;&lt; &quot;Output for test!&quot; &lt;&lt; endl;</span><br><span class="line">　m_iTimes++;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">int ClxTest::GetOutputTimes() const</span><br><span class="line">&#123;</span><br><span class="line">　return m_iTimes;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">void OutputTest(const ClxTest&amp; lx)</span><br><span class="line">&#123;</span><br><span class="line">　cout &lt;&lt; lx.GetOutputTimes() &lt;&lt; endl;</span><br><span class="line">　lx.Output();</span><br><span class="line">　cout &lt;&lt; lx.GetOutputTimes() &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>计数器m_iTimes被mutable修饰，那么它就可以突破const的限制，在被const修饰的函数里面也能被修改。</p>
+<h2 id="Defaulted-和-Deleted-函数"><a href="#Defaulted-和-Deleted-函数" class="headerlink" title="Defaulted 和 Deleted 函数"></a>Defaulted 和 Deleted 函数</h2><p>C++ 的类有四类特殊成员函数，它们分别是：默认构造函数、析构函数、拷贝构造函数以及拷贝赋值运算符。这些类的特殊成员函数负责创建、初始化、销毁，或者拷贝类的对象。如果程序员没有显式地为一个类定义某个特殊成员函数，而又需要用到该特殊成员函数时，则编译器会隐式的为这个类生成一个默认的特殊成员函数。例如：</p>
+<p>class X{<br>private:<br> int a;<br>}; </p>
+<p>X x;<br>上中，程序员并没有定义类 X 的默认构造函数，但是在创建类 X 的对象 x 的时候，又需要用到类 X 的默认构造函数，此时，编译器会隐式的为类 X 生成一个默认构造函数。该自动生成的默认构造函数没有参数，包含一个空的函数体，即 X::X（）{ }。虽然自动生成的默认构造函数仅有一个空函数体，但是它仍可用来成功创建类 X 的对象 x，清单 1 也可以编译通过。</p>
+<p>但是，如果程序员为类 X 显式的自定义了非默认构造函数，却没有定义默认构造函数的时候，清单 2 将会出现编译错误：</p>
+<p>清单 2<br>class X{<br>public:<br> X(int i){<br>   a = i;<br> }<br>private:<br> int a;<br>}; </p>
+<p>X x;  // 错误 , 默认构造函数 X::X() 不存在<br>清单 2 编译出错的原因在于类 X 已经有了用户自定义的构造函数，所以编译器将不再会为它隐式的生成默认构造函数。如果需要用到默认构造函数来创建类的对象时，程序员必须自己显式的定义默认构造函数。例如：</p>
+<p>清单 3</p>
+<p>class X{<br>public:<br> X(){};  // 手动定义默认构造函数<br> X(int i){<br>   a = i;<br> }<br>private:<br> int a;<br>}; </p>
+<p>X x;   // 正确，默认构造函数 X::X() 存在<br>从清单 3 可以看出，原本期望编译器自动生成的默认构造函数需要程序员手动编写了，即程序员的工作量加大了。此外，手动编写的默认构造函数的代码执行效率比编译器自动生成的默认构造函数低。类的其它几类特殊成员函数也和默认构造函数一样，当存在用户自定义的特殊成员函数时，编译器将不会隐式的自动生成默认特殊成员函数，而需要程序员手动编写，加大了程序员的工作量。类似的，手动编写的特殊成员函数的代码执行效率比编译器自动生成的特殊成员函数低。</p>
+<p>Defaulted 函数的提出<br>为了解决如清单 3 所示的两个问题：1. 减轻程序员的编程工作量；2. 获得编译器自动生成的默认特殊成员函数的高的代码执行效率，C++11 标准引入了一个新特性：defaulted 函数。程序员只需在函数声明后加上“=default;”，就可将该函数声明为 defaulted 函数，编译器将为显式声明的 defaulted 函数自动生成函数体。例如：</p>
+<p>清单 4<br>class X{<br>public:<br> X()= default;<br> X(int i){<br>   a = i;<br> }<br>private:<br> int a;<br>};<br>X x;<br>在清单 4 中，编译器会自动生成默认构造函数 X::X(){}，该函数可以比用户自己定义的默认构造函数获得更高的代码效率。</p>
+<p>背景问题<br>对于 C++ 的类，如果程序员没有为其定义特殊成员函数，那么在需要用到某个特殊成员函数的时候，编译器会隐式的自动生成一个默认的特殊成员函数，比如拷贝构造函数，或者拷贝赋值操作符。例如：</p>
+<p>清单 5<br>class X{<br>public:<br> X();<br>}; </p>
+<p>int main(){<br> X x1;<br> X x2=x1;   // 正确，调用编译器隐式生成的默认拷贝构造函数<br> X x3;<br> x3=x1;     // 正确，调用编译器隐式生成的默认拷贝赋值操作符<br>}<br>在清单 5 中，程序员不需要自己手动编写拷贝构造函数以及拷贝赋值操作符，依靠编译器自动生成的默认拷贝构造函数以及拷贝赋值操作符就可以实现类对象的拷贝和赋值。这在某些情况下是非常方便省事的，但是在某些情况下，假设我们不允许发生类对象之间的拷贝和赋值，可是又无法阻止编译器隐式自动生成默认的拷贝构造函数以及拷贝赋值操作符，那这就成为一个问题了。</p>
+<p>Deleted 函数的提出<br>为了能够让程序员显式的禁用某个函数，C++11 标准引入了一个新特性：deleted 函数。程序员只需在函数声明后加上“=delete;”，就可将该函数禁用。例如，我们可以将类 X 的拷贝构造函数以及拷贝赋值操作符声明为 deleted 函数，就可以禁止类 X 对象之间的拷贝和赋值。</p>
+<p>清单 6<br>class X{<br>     public:<br>       X();<br>       X(const X&amp;) = delete;  // 声明拷贝构造函数为 deleted 函数<br>       X&amp; operator = (const X &amp;) = delete; // 声明拷贝赋值操作符为 deleted 函数<br>     }; </p>
+<p> int main(){<br>  X x1;<br>  X x2=x1;   // 错误，拷贝构造函数被禁用<br>  X x3;<br>  x3=x1;     // 错误，拷贝赋值操作符被禁用<br> }<br>在清单 16 中，虽然只显式的禁用了一个拷贝构造函数和一个拷贝赋值操作符，但是由于编译器检测到类 X 存在用户自定义的拷贝构造函数和拷贝赋值操作符的声明，所以不会再隐式的生成其它参数类型的拷贝构造函数或拷贝赋值操作符，也就相当于类 X 没有任何拷贝构造函数和拷贝赋值操作符，所以对象间的拷贝和赋值被完全禁止了。</p>
+<h2 id="全局变量extern"><a href="#全局变量extern" class="headerlink" title="全局变量extern"></a>全局变量extern</h2><p>def.h中声明extern int m;<br>def.cpp中int m;<br>两个文件必须要有<br>在主程序中添加头文件，include “def.h”后，就可以直接使用m变量。</p>
+<h2 id="静态全局变量"><a href="#静态全局变量" class="headerlink" title="静态全局变量"></a>静态全局变量</h2><h3 id="static"><a href="#static" class="headerlink" title="static:"></a>static:</h3><p>用static修饰的变量，在其所限定的作用域中只会有一分内存</p>
+<p>1:在一个函数内部：说明是一个静态局部变量，</p>
+<p>不管这个函数被调用多少次，这个static修饰的变量只会有一分内存，也就是说当这个变量多次被修改，都是在上一次基础上修改，不会从头再来</p>
+<p>2:在一个文件内部，函数外部：静态全局变量</p>
+<p>该文件中的函数都可以访问到，并且不同函数在对该变量修改时都是在上一个函数修改的基础上修改的</p>
+<h3 id="静态全局变量和非静态全局变量的区别"><a href="#静态全局变量和非静态全局变量的区别" class="headerlink" title="静态全局变量和非静态全局变量的区别"></a>静态全局变量和非静态全局变量的区别</h3><p>static 限制了变量的作用域只在该文件里，所以加上static在别的文件中定义一个相同的static没有问题<br>没有static修饰的全局变量，要是在不同文件中定义了相同的变量名，程序会报错</p>
+<p>静态全局变量声明：在头文件中！<br>静态全局变量定义：在.cpp文件中，与函数同级。定义前一定要加类名。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">*.h</span><br><span class="line">class test</span><br><span class="line">static int word;</span><br><span class="line"></span><br><span class="line">*.cpp</span><br><span class="line">int class::word=1</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/16/python_exe_c/" rel="next" title="python调用c语言">
+                <i class="fa fa-chevron-left"></i> python调用c语言
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/02/23/options/" rel="prev" title="boost::program_options使用">
+                boost::program_options使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">David Lee</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#C-lambda表达式"><span class="nav-number">1.</span> <span class="nav-text">C++lambda表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#匿名函数"><span class="nav-number">1.1.</span> <span class="nav-text">匿名函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本格式"><span class="nav-number">1.2.</span> <span class="nav-text">基本格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#各个部分说明"><span class="nav-number">1.3.</span> <span class="nav-text">各个部分说明</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#函数对象参数-不可省略"><span class="nav-number">1.3.1.</span> <span class="nav-text">函数对象参数(不可省略)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#重载参数列表"><span class="nav-number">1.3.2.</span> <span class="nav-text">重载参数列表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#返回类型-可以自动推导-可以省略"><span class="nav-number">1.3.3.</span> <span class="nav-text">返回类型(可以自动推导 可以省略)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#函数体"><span class="nav-number">1.3.4.</span> <span class="nav-text">函数体</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#函数选项opt-可以省略"><span class="nav-number">1.3.5.</span> <span class="nav-text">函数选项opt    (可以省略)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mutable关键字"><span class="nav-number">2.</span> <span class="nav-text">mutable关键字</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Defaulted-和-Deleted-函数"><span class="nav-number">3.</span> <span class="nav-text">Defaulted 和 Deleted 函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#全局变量extern"><span class="nav-number">4.</span> <span class="nav-text">全局变量extern</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#静态全局变量"><span class="nav-number">5.</span> <span class="nav-text">静态全局变量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#static"><span class="nav-number">5.1.</span> <span class="nav-text">static:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#静态全局变量和非静态全局变量的区别"><span class="nav-number">5.2.</span> <span class="nav-text">静态全局变量和非静态全局变量的区别</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">David Lee</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
