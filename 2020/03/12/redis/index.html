@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="redis的基本操作set get1234561、set key value      get key   批量设置获取   mset key1 value1 key2 value2   mget key1 key2   append name value hash一个key对应一个dict 123456789101112131、hset(name, key, value)   #name对应的h">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis操作">
+<meta property="og:url" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2020&#x2F;03&#x2F;12&#x2F;redis&#x2F;index.html">
+<meta property="og:site_name" content="李厅">
+<meta property="og:description" content="redis的基本操作set get1234561、set key value      get key   批量设置获取   mset key1 value1 key2 value2   mget key1 key2   append name value hash一个key对应一个dict 123456789101112131、hset(name, key, value)   #name对应的h">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-03-09T10:00:18.000Z">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lovethegirl.github.io/2020/03/12/redis/"/>
+
+
+
+
+
+  <title>redis操作 | 李厅</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">李厅</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://lovethegirl.github.io/2020/03/12/redis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="David Lee">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="李厅">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">redis操作</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-12T20:52:58+08:00">
+                2020-03-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="redis的基本操作"><a href="#redis的基本操作" class="headerlink" title="redis的基本操作"></a>redis的基本操作</h2><h3 id="set-get"><a href="#set-get" class="headerlink" title="set get"></a>set get</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1、set key value   </span><br><span class="line">   get key</span><br><span class="line">   批量设置获取</span><br><span class="line">   mset key1 value1 key2 value2</span><br><span class="line">   mget key1 key2</span><br><span class="line">   append name value</span><br></pre></td></tr></table></figure>
+<h3 id="hash"><a href="#hash" class="headerlink" title="hash"></a>hash</h3><p>一个key对应一个dict</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">1、hset(name, key, value)</span><br><span class="line">   #name对应的hash中设置一个键值对（不存在，则创建，否则，修改）</span><br><span class="line">   hset(&quot;dic_name&quot;,&quot;a1&quot;,&quot;aa&quot;)</span><br><span class="line">   hget(name,key)</span><br><span class="line"></span><br><span class="line">2、hgetall(name)</span><br><span class="line">   #获取name对应hash的所有键值</span><br><span class="line"></span><br><span class="line">3、hmset(name, mapping)</span><br><span class="line">   #在name对应的hash中批量设置键值对,mapping:字典</span><br><span class="line">   dic=&#123;&quot;a1&quot;:&quot;aa&quot;,&quot;b1&quot;:&quot;bb&quot;&#125;</span><br><span class="line">   hmset(&quot;dic_name&quot;,dic) </span><br><span class="line">   hmget(name, keys, *args)</span><br></pre></td></tr></table></figure>
+
+<h3 id="list"><a href="#list" class="headerlink" title="list"></a>list</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">redis中的List在在内存中按照一个name对应一个List来存储 </span><br><span class="line">1、lpush(name,values)</span><br><span class="line">   # 在name对应的list中添加元素，每个新的元素都添加到列表的最左边 </span><br><span class="line">   rpush(name,values)</span><br><span class="line">   #同lpush，但每个新的元素都添加到列表的最右边</span><br><span class="line"></span><br><span class="line">2、lpushx(name,value)</span><br><span class="line">   #在name对应的list中添加元素，只有name已经存在时，值添加到列表的最左边</span><br><span class="line">   rpushx(name,value)</span><br><span class="line">   #在name对应的list中添加元素，只有name已经存在时，值添加到列表的最右边</span><br><span class="line"></span><br><span class="line">3、llen(name)</span><br><span class="line">   # name对应的list元素的个数</span><br><span class="line"></span><br><span class="line">4、linsert(name, where, refvalue, value))</span><br><span class="line">   # 在name对应的列表的某一个值前或后插入一个新值</span><br><span class="line"></span><br><span class="line">5、lpop(name)</span><br><span class="line">   #移除列表的左侧第一个元素，返回值则是第一个元素</span><br><span class="line"></span><br><span class="line">6、lindex(name, index)</span><br><span class="line">   #根据索引获取列表内元素</span><br><span class="line"></span><br><span class="line">7、lrange(name, start, end)</span><br><span class="line">   #分片获取元素</span><br><span class="line"></span><br><span class="line">8、ltrim(name, start, end)</span><br><span class="line">   #移除列表内没有在该索引之内的值</span><br><span class="line">   r.ltrim(&quot;list_name&quot;,0,2)</span><br><span class="line"></span><br><span class="line">9、rpoplpush(src, dst)</span><br><span class="line">   # 从一个列表取出最右边的元素，同时将其添加至另一个列表的最左边</span><br><span class="line">   #src 要取数据的列表</span><br><span class="line">   #dst 要添加数据的列表</span><br><span class="line">   brpoplpush(src, dst, timeout=0)</span><br><span class="line">   #同rpoplpush，多了个timeout, timeout：取数据的列表没元素后的阻塞时间，0为一直阻塞</span><br></pre></td></tr></table></figure>
+
+<h2 id="python下redis的使用"><a href="#python下redis的使用" class="headerlink" title="python下redis的使用"></a>python下redis的使用</h2><h3 id="连接redis"><a href="#连接redis" class="headerlink" title="连接redis"></a>连接redis</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"># -*- coding:utf8 -*-</span><br><span class="line"></span><br><span class="line">import redis</span><br><span class="line"></span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line">这种连接是连接一次就断了，耗资源.端口默认6379，就不用写</span><br><span class="line">r = redis.Redis(host=&apos;127.0.0.1&apos;,port=6379,password=&apos;tianxuroot&apos;)</span><br><span class="line">r.set(&apos;name&apos;,&apos;root&apos;)</span><br><span class="line"></span><br><span class="line">print(r.get(&apos;name&apos;).decode(&apos;utf8&apos;))</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line">连接池：</span><br><span class="line">当程序创建数据源实例时，系统会一次性创建多个数据库连接，并把这些数据库连接保存在连接池中，当程序需要进行数据库访问时，</span><br><span class="line">无需重新新建数据库连接，而是从连接池中取出一个空闲的数据库连接</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line">pool = redis.ConnectionPool(host=&apos;127.0.0.1&apos;,password=&apos;helloworld&apos;)   #实现一个连接池</span><br><span class="line"></span><br><span class="line">r = redis.Redis(connection_pool=pool)</span><br><span class="line">r.set(&apos;foo&apos;,&apos;bar&apos;)</span><br><span class="line">print(r.get(&apos;foo&apos;).decode(&apos;utf8&apos;))</span><br></pre></td></tr></table></figure>
+
+<h3 id="API操作"><a href="#API操作" class="headerlink" title="API操作"></a>API操作</h3><p>‘’’<br>lpush(name,values)<br>　　# 在name对应的list中添加元素，每个新的元素都添加到列表的最左边<br>　　# 如：<br>        # r.lpush(‘oo’, 11,22,33)<br>        # 保存顺序为: 33,22,11<br>　　# 扩展：<br>        # rpush(name, values) 表示从右向左操作</p>
+<p>lpushx(name,value)<br>　　# 在name对应的list中添加元素，只有name已经存在时，值添加到列表的最左边<br>　　# 更多：<br>        # rpushx(name, value) 表示从右向左操作</p>
+<p>llen(name)<br>　　# name对应的list元素的个数</p>
+<p>linsert(name, where, refvalue, value))<br>　　# 在name对应的列表的某一个值前或后插入一个新值<br>　　# 参数：<br>        # name，redis的name<br>        # where，BEFORE或AFTER<br>        # refvalue，标杆值，即：在它前后插入数据<br>        # value，要插入的数据</p>
+<p>r.lset(name, index, value)<br>　　# 对name对应的list中的某一个索引位置重新赋值<br>　　# 参数：<br>        # name，redis的name<br>        # index，list的索引位置<br>        # value，要设置的值</p>
+<p>r.lrem(name, value, num)<br>　　# 在name对应的list中删除指定的值<br>　　# 参数：<br>        # name，redis的name<br>        # value，要删除的值<br>        # num，num=0，删除列表中所有的指定值；<br>             # num=2,从前到后，删除2个；<br>             # num=-2,从后向前，删除2个</p>
+<p>lpop(name)<br>　　# 在name对应的列表的左侧获取第一个元素并在列表中移除，返回值则是第一个元素<br>　　# 更多：<br>        # rpop(name) 表示从右向左操作</p>
+<p>lindex(name, index)<br>　　#在name对应的列表中根据索引获取列表元素</p>
+<p>lrange(name, start, end)<br>　　# 在name对应的列表分片获取数据<br>　　# 参数：<br>        # name，redis的name<br>        # start，索引的起始位置<br>        # end，索引结束位置</p>
+<p>ltrim(name, start, end)<br>　　# 在name对应的列表中移除没有在start-end索引之间的值<br>　　# 参数：<br>        # name，redis的name<br>        # start，索引的起始位置<br>        # end，索引结束位置</p>
+<p>rpoplpush(src, dst)<br>　　# 从一个列表取出最右边的元素，同时将其添加至另一个列表的最左边<br>　　# 参数：<br>        # src，要取数据的列表的name<br>        # dst，要添加数据的列表的name</p>
+<p>blpop(keys, timeout)<br>　　# 将多个列表排列，按照从左到右去pop对应列表的元素<br>　　# 参数：<br>        # keys，redis的name的集合<br>        # timeout，超时时间，当元素所有列表的元素获取完之后，阻塞等待列表内有数据的时间（秒）, 0 表示永远阻塞</p>
+<p>　　# 更多：<br>        # r.brpop(keys, timeout)，从右向左获取数据</p>
+<p>brpoplpush(src, dst, timeout=0)<br>　　# 从一个列表的右侧移除一个元素并将其添加到另一个列表的左侧<br>　　# 参数：<br>        # src，取出并要移除元素的列表对应的name<br>        # dst，要插入元素的列表对应的name<br>        # timeout，当src对应的列表中没有数据时，阻塞等待其有数据的超时时间（秒），0 表示永远阻塞<br>‘’’</p>
+<h2 id="并发问题"><a href="#并发问题" class="headerlink" title="并发问题"></a>并发问题</h2><p>redis所有的基础命令都是原子性的</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/12/redissave/" rel="next" title="redis持久保存介绍">
+                <i class="fa fa-chevron-left"></i> redis持久保存介绍
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/12/thread/" rel="prev" title="ThreadPoolExecutor和ProcessPoolExecutor介绍">
+                ThreadPoolExecutor和ProcessPoolExecutor介绍 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">David Lee</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">41</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#redis的基本操作"><span class="nav-number">1.</span> <span class="nav-text">redis的基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#set-get"><span class="nav-number">1.1.</span> <span class="nav-text">set get</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hash"><span class="nav-number">1.2.</span> <span class="nav-text">hash</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#list"><span class="nav-number">1.3.</span> <span class="nav-text">list</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#python下redis的使用"><span class="nav-number">2.</span> <span class="nav-text">python下redis的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#连接redis"><span class="nav-number">2.1.</span> <span class="nav-text">连接redis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#API操作"><span class="nav-number">2.2.</span> <span class="nav-text">API操作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#并发问题"><span class="nav-number">3.</span> <span class="nav-text">并发问题</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">David Lee</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

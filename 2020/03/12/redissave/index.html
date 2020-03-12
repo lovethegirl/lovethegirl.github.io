@@ -79,14 +79,14 @@
 
 
 
-<meta name="description" content="主要组件program_options的使用主要通过下面三个组件完成： 1234组件名                              	作用options_description(选项描述器)	   描述当前的程序定义了哪些选项parse_command_line(选项分析器)    	解析由命令行输入的参数variables_map(选项存储器)	      容器,用于存储解析后的选">
+<meta name="description" content="redis持久化存储支持两种方式：RDB和AOF。RDB一定时间取存储文件，AOF默认每秒去存储历史命令，官方建议两种方式同时使用没有持久化的redis和memcache一样，相当于一个纯内存的数据库 RDB（Redis DataBase）RDB是将数据写入一个临时文件，持久化结束后，用这个临时文件替换上次持久化的文件，达到数据恢复。优点：使用单独子进程来进行持久化，主进程不会进行任何IO操作，保">
 <meta property="og:type" content="article">
-<meta property="og:title" content="boost::program_options使用">
-<meta property="og:url" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2020&#x2F;02&#x2F;23&#x2F;options&#x2F;index.html">
+<meta property="og:title" content="redis持久保存介绍">
+<meta property="og:url" content="http:&#x2F;&#x2F;lovethegirl.github.io&#x2F;2020&#x2F;03&#x2F;12&#x2F;redissave&#x2F;index.html">
 <meta property="og:site_name" content="李厅">
-<meta property="og:description" content="主要组件program_options的使用主要通过下面三个组件完成： 1234组件名                              	作用options_description(选项描述器)	   描述当前的程序定义了哪些选项parse_command_line(选项分析器)    	解析由命令行输入的参数variables_map(选项存储器)	      容器,用于存储解析后的选">
+<meta property="og:description" content="redis持久化存储支持两种方式：RDB和AOF。RDB一定时间取存储文件，AOF默认每秒去存储历史命令，官方建议两种方式同时使用没有持久化的redis和memcache一样，相当于一个纯内存的数据库 RDB（Redis DataBase）RDB是将数据写入一个临时文件，持久化结束后，用这个临时文件替换上次持久化的文件，达到数据恢复。优点：使用单独子进程来进行持久化，主进程不会进行任何IO操作，保">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-02-22T15:08:22.000Z">
+<meta property="og:updated_time" content="2020-03-12T12:49:28.000Z">
 <meta name="twitter:card" content="summary">
 
 
@@ -117,13 +117,13 @@
 
 
 
-  <link rel="canonical" href="http://lovethegirl.github.io/2020/02/23/options/"/>
+  <link rel="canonical" href="http://lovethegirl.github.io/2020/03/12/redissave/"/>
 
 
 
 
 
-  <title>boost::program_options使用 | 李厅</title>
+  <title>redis持久保存介绍 | 李厅</title>
   
 
 
@@ -250,7 +250,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://lovethegirl.github.io/2020/02/23/options/">
+    <link itemprop="mainEntityOfPage" href="http://lovethegirl.github.io/2020/03/12/redissave/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="David Lee">
@@ -267,7 +267,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">boost::program_options使用</h1>
+          <h1 class="post-title" itemprop="name headline">redis持久保存介绍</h1>
         
 
         <div class="post-meta">
@@ -279,8 +279,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-23T22:40:51+08:00">
-                2020-02-23
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-12T20:52:44+08:00">
+                2020-03-12
               </time>
             
 
@@ -317,15 +317,21 @@
       
 
       
-        <h2 id="主要组件"><a href="#主要组件" class="headerlink" title="主要组件"></a>主要组件</h2><p>program_options的使用主要通过下面三个组件完成：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">组件名                              	作用</span><br><span class="line">options_description(选项描述器)	   描述当前的程序定义了哪些选项</span><br><span class="line">parse_command_line(选项分析器)    	解析由命令行输入的参数</span><br><span class="line">variables_map(选项存储器)	      容器,用于存储解析后的选项</span><br></pre></td></tr></table></figure>
+        <p>redis持久化存储支持两种方式：RDB和AOF。RDB一定时间取存储文件，AOF默认每秒去存储历史命令，官方建议两种方式同时使用<br>没有持久化的redis和memcache一样，相当于一个纯内存的数据库</p>
+<h2 id="RDB（Redis-DataBase）"><a href="#RDB（Redis-DataBase）" class="headerlink" title="RDB（Redis DataBase）"></a>RDB（Redis DataBase）</h2><p>RDB是将数据写入一个临时文件，持久化结束后，用这个临时文件替换上次持久化的文件，达到数据恢复。<br>优点：使用单独子进程来进行持久化，主进程不会进行任何IO操作，保证了redis的高性能<br>缺点：RDB是间隔一段时间进行持久化，如果持久化之间redis发生故障，会发生数据丢失。所以这种方式更适合数据要求不严谨的时候</p>
+<p>RDB默认开启，redis.conf中的具体配置参数如下；<br>#dbfilename：持久化数据存储在本地的文件<br>dbfilename dump.rdb<br>#dir：持久化数据存储在本地的路径，如果是在/redis/redis-3.0.6/src下启动的redis-cli，则数据会存储在当前src目录下<br>dir ./<br>#save时间，以下分别表示更改了1个key时间隔900s进行持久化存储；更改了10个key300s进行存储；更改10000个key60s进行存储。<br>save 900 1<br>save 300 10<br>save 60 10000</p>
+<p>持久化过程：<br>当满足save的条件时，比如更改了1个key，900s后会将数据写入临时文件，持久化完成后将临时文件替换旧的dump.rdb。（存储数据的节点是到触发时间时的的节点）</p>
+<p>使用RDB恢复数据：<br>自动的持久化数据存储到dump.rdb后。实际只要重启redis服务即可完成（启动redis的server时会从dump.rdb中先同步数据）</p>
+<p>使用命令进行持久化save存储：<br>./redis-cli -h ip -p port save<br>./redis-cli -h ip -p port bgsave<br>一个是在前台进行存储，一个是在后台进行存储。我的client就在server这台服务器上，所以不需要连其他机器，直接./redis-cli bgsave</p>
+<h2 id="AOF（AppendOnly-File）"><a href="#AOF（AppendOnly-File）" class="headerlink" title="AOF（AppendOnly File）"></a>AOF（AppendOnly File）</h2><p>AOF是将执行过的指令记录下来，数据恢复时按照从前到后的顺序再将指令执行一遍，实现数据恢复<br>优点：可以保持更高的数据完整性，如果设置追加file的时间是1s，如果redis发生故障，最多会丢失1s的数据；且如果日志写入不完整支持redis-check-aof来进行日志修复；AOF文件没被rewrite之前（文件过大时会对命令进行合并重写），可以删除其中的某些命令（比如误操作的flushall）。<br>缺点：AOF文件比RDB文件大，且恢复速度慢。</p>
+<p>AOF默认关闭，开启方法，修改配置文件reds.conf：appendonly yes<br>其他相关配置项：<br>#AOF保存的文件名<br>appendfilename “”</p>
+<p>以下为同步方式相关的配置：<br>#一旦插入命令，立即同步到磁盘，保证了完全的持久化，但是速度慢，不推荐<br>appendfsync always</p>
+<p>#AOF每秒进行同步<br>appendfsync everysec</p>
+<p>#不自动同步，性能最好，但是持久化没有保证<br>appendfsync no</p>
+<p>存储过程：将快照内容以命令的形式追加到AOF文件中，所以随着追加AOF文件会越来越大<br>保存的AOF文件存储了执行的所有命令，所以可以进行修改文件来撤销输错的命令（在重写之前，如果重写了就没有办法了）</p>
+<p>针对AOF文件越来越大的问题，可以对AOF文件进行重写，命令如下：<br>redis-cli -h ip -p port bgrewriteaof<br>重写命令的操作过程：在当前的快照保存工作结束后，开启一个子进程，将AOF文件进行重写，合并set命令等操作到一个临时文件，达到缩小文件大小的目的。重写结束后后将临时文件替换为新的AOF文件（重写过程中如果有新的redis操作命令，会提交到缓存中，重写结束后追加到AOF文件内）</p>
+<p>说明：redis2.4以上版本，重写机制自动触发。触发的相关redis.conf配置如下：<br>auto-aof-rewrite-percentage 100（当目前的AOF文件大小超过上一次重写文件大小的百分之几时进行重写，如果没有重启过，则以启动时的AOF文件大小为依据）；<br>auto-aof-rewrite-min-size 64mb（允许重写的最小AOF文件大小）；<br>数据恢复：<br>重启redis服务，前提是配置文件必须设置了appendonly yes，然后会从appendfile的文件加载文件。反之是从RDB中加载数据的。</p>
 
-<p>代码流程</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1、构造option_description对象和variables_map对象</span><br><span class="line">2、add_options()-&gt;向option_description对象添加选项</span><br><span class="line">3、parse_command_line()-&gt;将命令行输入的参数解析出来</span><br><span class="line">4、store()-&gt;将解析出的选项存储至variables_map中</span><br><span class="line">5、notify()-&gt;通知variables_map去更新所有的外部变量</span><br><span class="line">6、count()-&gt;检测某个选项是否被输入</span><br><span class="line">7、operator[]-&gt;取出选项的值</span><br></pre></td></tr></table></figure>
-
-<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>下面的代码是boost::program_options的一个简单的用法示例.<br>该示例中指定了两个选项,分别是–help和–filename.</p>
-<p>//linux系统下,编译选项需加上 -lboost_program_options</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;string&gt;</span><br><span class="line">#include &lt;boost/program_options.hpp&gt;</span><br><span class="line">namespace  bpo = boost::program_options;</span><br><span class="line"></span><br><span class="line">int main(int argc, char const *argv[])</span><br><span class="line">&#123;</span><br><span class="line">    //步骤一: 构造选项描述器和选项存储器</span><br><span class="line">    //选项描述器,其参数为该描述器的名字</span><br><span class="line">    bpo::options_description opts(&quot;all options&quot;); </span><br><span class="line">    //选项存储器,继承自map容器</span><br><span class="line">    bpo::variables_map vm;</span><br><span class="line"></span><br><span class="line">    //步骤二: 为选项描述器增加选项</span><br><span class="line">    //其参数依次为: key, value的类型，该选项的描述</span><br><span class="line">    opts.add_options()  </span><br><span class="line">    (&quot;filename&quot;, bpo::value&lt;std::string&gt;(), &quot;the file name which want to be found&quot;)</span><br><span class="line">    (&quot;help&quot;, &quot;this is a program to find a specified file&quot;);</span><br><span class="line"></span><br><span class="line">    //步骤三: 先对命令行输入的参数做解析,而后将其存入选项存储器</span><br><span class="line">    //如果输入了未定义的选项，程序会抛出异常，所以对解析代码要用try-catch块包围</span><br><span class="line">    try&#123;</span><br><span class="line">        //parse_command_line()对输入的选项做解析</span><br><span class="line">        //store()将解析后的结果存入选项存储器</span><br><span class="line">        bpo::store(bpo::parse_command_line(argc, argv, opts), vm);</span><br><span class="line">    &#125;</span><br><span class="line">    catch(...)&#123;</span><br><span class="line">        std::cout &lt;&lt; &quot;输入的参数中存在未定义的选项！\n&quot;;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line">    bpo::notify(vm);  </span><br><span class="line">    //步骤四: 参数解析完毕，处理实际信息</span><br><span class="line">    //count()检测该选项是否被输入</span><br><span class="line">    if(vm.count(&quot;help&quot;) )&#123;//若参数中有help选项</span><br><span class="line">        //options_description对象支持流输出， 会自动打印所有的选项信息</span><br><span class="line">        std::cout &lt;&lt; opts &lt;&lt; std::endl;   </span><br><span class="line">    &#125;</span><br><span class="line">    if(vm.count(&quot;filename&quot;) )&#123;</span><br><span class="line">        //variables_map(选项存储器)是std::map的派生类,可以像关联容器一样使用,</span><br><span class="line">        //通过operator[]来取出其中的元素.但其内部的元素类型value_type是boost::any,</span><br><span class="line">        //用来存储不确定类型的参数值,必须通过模板成员函数as&lt;type&gt;()做类型转换后,</span><br><span class="line">        //才能获取其具体值.</span><br><span class="line">        std::cout &lt;&lt; &quot;find &quot; &lt;&lt; vm[&quot;filename&quot;].as&lt;std::string&gt;() &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line">    if(vm.empty() )&#123;</span><br><span class="line">        std::cout &lt;&lt; &quot;no options found \n&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
     </div>
     
@@ -349,8 +355,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/02/23/c++11/" rel="next" title="c++11的一些特性">
-                <i class="fa fa-chevron-left"></i> c++11的一些特性
+              <a href="/2020/02/23/RWLock/" rel="next" title="ceph中的RWLock">
+                <i class="fa fa-chevron-left"></i> ceph中的RWLock
               </a>
             
           </div>
@@ -359,8 +365,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2020/02/23/RWLock/" rel="prev" title="ceph中的RWLock">
-                ceph中的RWLock <i class="fa fa-chevron-right"></i>
+              <a href="/2020/03/12/redis/" rel="prev" title="redis操作">
+                redis操作 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -475,7 +481,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#主要组件"><span class="nav-number">1.</span> <span class="nav-text">主要组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#示例"><span class="nav-number">2.</span> <span class="nav-text">示例</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RDB（Redis-DataBase）"><span class="nav-number">1.</span> <span class="nav-text">RDB（Redis DataBase）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AOF（AppendOnly-File）"><span class="nav-number">2.</span> <span class="nav-text">AOF（AppendOnly File）</span></a></li></ol></div>
             
 
           </div>
